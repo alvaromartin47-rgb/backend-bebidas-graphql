@@ -1,0 +1,41 @@
+
+type Query {
+    ping: String!
+    login(input: formLogin): Session
+    users: [User]
+}
+
+type Mutation {
+    signIn(input: formSignIn): responseSignIn
+}
+
+type responseSignIn {
+    user: User
+    message: String
+}
+
+type User {
+    _id: ID
+    name: String
+    lastname: String
+    password: String
+    email: String
+}
+
+input formSignIn {
+    name: String!
+    lastname: String!
+    password: String!
+    email: String!
+}
+
+input formLogin {
+    userId: ID!
+    password: String!
+}
+
+type Session {
+    access_token: String
+    refresh_token: String
+    message: String
+}
