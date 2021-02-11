@@ -1,47 +1,42 @@
 import User from '../../../models/User';
+import Session from '../../../models/Session';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import env from 'node-env-file';
 
-class UserInvalidId extends Error {
-    constructor(message) {
-      super(message)
-    }
-}
-
 env("src/.env");
 
-async function validateUserAndPassword(userId, password) {
-    let hash;
+function validatePassword(password, hash) {
+    return new Promise(async (resolve, reject) => {
+        const match = await bcrypt.compare(password, hash);
+        if (match) resolve(true);
+        return reject("Invalid password");
+    });
+}
 
-    try {
-        const user = await User.findById(userId);
-        hash = user.password;
-    } catch (error) {
-        throw new UserInvalidId("ID recived is invalid");
-    }
-    
-    const match = await bcrypt.compare(password, hash);
-    
-    if (match) {
-        const refresh_token = jwt.sign({"data": {"privilige": "admin"}}, process.env.REFRESH_TOKEN_SECRET, {expiresIn: '10m'});
-        const access_token =  jwt.sign({"data": {userId, "privilege":"user"}}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '10m'});
-        
-        return {
-            access_token,
-            refresh_token,
+function validateUserAndPassword(userId, password) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const { _id, hash } = await User.findById(userId);
+            const ok = await validatePassword(password, hash);
+            return resolve(await Session.findOneAndUpdate({userId: _id}, {status_session: true}));
+
+        } catch (error) {
+            return reject(error);
         }
-    }
-
-    return {message: "Password incorrect"};
-    
+    });
 }
 
 async function findUsers() {
     return await User.find();
 }
 
+async function findSessions() {
+    return await Session.find();
+}
+
 module.exports = {
     validateUserAndPassword,
-    findUsers
+    findUsers,
+    findSessions
 }

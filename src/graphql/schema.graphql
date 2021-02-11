@@ -5,6 +5,7 @@ type Query {
     ping: String!
     login(input: formLogin): Session
     users: [User]
+    sessions: [Session]
 }
 
 type Mutation {
@@ -17,7 +18,6 @@ type User {
     _id: ID
     name: String
     lastname: String
-    password: String
     email: String
 }
 
@@ -34,6 +34,7 @@ input formLogin {
 }
 
 type Session {
-    access_token: String
-    refresh_token: String
+    _id: ID
+    userId: ID
+    status_session: Boolean
 }

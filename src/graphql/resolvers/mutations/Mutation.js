@@ -2,10 +2,14 @@ import fcs from './functions';
 
 const Mutation = {
     async signIn(root, { input }, ctx) {
-        const hash = await fcs.encryptPassword(input.password);
-        input.password = hash;
-        const response = fcs.addUserDb(input);
-        return response;
+        input.hash = await fcs.encryptPassword(input.password);
+        
+        delete input.password;
+        
+        const user = await fcs.addUserDb(input);
+        const session = fcs.addSessionDb(user._id);
+        
+        return user;
     }
 }
 
