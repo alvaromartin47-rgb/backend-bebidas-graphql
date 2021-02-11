@@ -1,4 +1,6 @@
 
+# Principals
+
 type Query {
     ping: String!
     login(input: formLogin): Session
@@ -6,13 +8,10 @@ type Query {
 }
 
 type Mutation {
-    signIn(input: formSignIn): responseSignIn
+    signIn(input: formSignIn): User
 }
 
-type responseSignIn {
-    user: User
-    message: String
-}
+# Auxiliars
 
 type User {
     _id: ID
@@ -37,5 +36,4 @@ input formLogin {
 type Session {
     access_token: String
     refresh_token: String
-    message: String
 }

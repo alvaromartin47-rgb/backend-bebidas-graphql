@@ -10,5 +10,8 @@ app.use(cors());
 export const server = new GraphQLServer({
     express: app,
     typeDefs: path.join(__dirname, 'graphql/schema.graphql'),
-    resolvers
+    resolvers,
+    context: ({ request }) => ({
+        token: request.headers.authorization || ''
+    })
 });

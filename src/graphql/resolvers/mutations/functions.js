@@ -5,8 +5,7 @@ import bcrypt from 'bcrypt';
 async function addUserDb(schemaUser) {
     try {
         const newUser = new User(schemaUser);
-        const user = await newUser.save();
-        return {user, message: "User registred succesfully"};
+        return await newUser.save();
     } catch (error) {
         return {message: "Error"};  
     }

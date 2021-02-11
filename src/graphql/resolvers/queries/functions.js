@@ -1,6 +1,15 @@
 import User from '../../../models/User';
-// import jwt from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import env from 'node-env-file';
+
+class UserInvalidId extends Error {
+    constructor(message) {
+      super(message)
+    }
+}
+
+env("src/.env");
 
 async function validateUserAndPassword(userId, password) {
     let hash;
@@ -9,22 +18,18 @@ async function validateUserAndPassword(userId, password) {
         const user = await User.findById(userId);
         hash = user.password;
     } catch (error) {
-        console.log(error);
-        return {message: "The received id does not exist"};
+        throw new UserInvalidId("ID recived is invalid");
     }
     
     const match = await bcrypt.compare(password, hash);
     
-    // Comparo contraseña
     if (match) {
-        // const refresh_token = jwt.sign({"data": {userId}}, "super-secret", {expiresIn: '1h'});
-        // const access_token =  jwt.sign({"data": {userId}}, "super-secret", {expiresIn: '1h'});
-        const message = "Login succesfully";
+        const refresh_token = jwt.sign({"data": {"privilige": "admin"}}, process.env.REFRESH_TOKEN_SECRET, {expiresIn: '10m'});
+        const access_token =  jwt.sign({"data": {userId, "privilege":"user"}}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '10m'});
         
         return {
-            // access_token,
-            // refresh_token,
-            message
+            access_token,
+            refresh_token,
         }
     }
 

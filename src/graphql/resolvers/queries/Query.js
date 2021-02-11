@@ -1,4 +1,5 @@
 import fcs from './functions';
+import { getPayload } from '../utils';
 
 const Query = {
     ping() {
@@ -8,7 +9,8 @@ const Query = {
         const session = fcs.validateUserAndPassword(input.userId, input.password);
         return session;
     },
-    users() {
+    users(root, args, ctx) {
+        const match = getPayload(ctx.token);
         return fcs.findUsers();
     }
 }
