@@ -1,5 +1,5 @@
-import Query from '../petitions/queries/Query';
-import Mutation from '../petitions/mutations/Mutation';
+import Query from './queries/Query';
+import Mutation from './mutations/Mutation';
 
 export default {
     Query,
