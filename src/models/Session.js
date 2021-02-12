@@ -4,7 +4,9 @@ const { Schema } = mongoose;
 
 const sessionSchema = new Schema({
     userId: {type: String},
-    status_session: {type: Boolean}
+    start: {type: String},
+    end: {type: String},
+    status: {type: Boolean}
 });
 
 module.exports = mongoose.model('Session', sessionSchema);

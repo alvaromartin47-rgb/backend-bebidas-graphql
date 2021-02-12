@@ -3,13 +3,14 @@
 
 type Query {
     ping: String!
-    login(input: formLogin): Session
     users: [User]
     sessions: [Session]
 }
 
 type Mutation {
     signIn(input: formSignIn): User
+    login(input: formLogin): Session
+    logout(input: formLogout): Session
 }
 
 # Auxiliars
@@ -19,6 +20,10 @@ type User {
     name: String
     lastname: String
     email: String
+}
+
+input formLogout {
+    userId: ID
 }
 
 input formSignIn {
@@ -36,5 +41,7 @@ input formLogin {
 type Session {
     _id: ID
     userId: ID
-    status_session: Boolean
+    status: Boolean
+    start: String
+    end: String
 }
