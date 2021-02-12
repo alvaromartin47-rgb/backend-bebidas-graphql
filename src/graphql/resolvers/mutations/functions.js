@@ -1,22 +1,24 @@
 import User from '../../../models/User';
 import Session from '../../../models/Session';
+import Password from '../../../models/Password';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import env from 'node-env-file';
+import { raise } from '../utils';
 
 env("src/.env");
 
-function processLogin(userId, password) {
-    return new Promise(async (resolve, reject) => {
-        if (!await isUserRegistred(userId)) return reject("User not found");
+async function processLogin(userId, password) {
+    await isUserRegistred({_id: userId});
         
-        if (await isSessionActive(userId)) return reject("Session is active");
-        
-        if (!await isValidPassword(userId, password)) return reject("Password is invalid");
-        
-        return resolve(startSession(userId));
-    });
+    await isSessionActive(userId);
+    
+    await isValidPassword(userId, password);
+
+    return await startSession(userId);
 }
+
+// REFACTOR LOGOUT
 
 function processLogout(userId) {
     return new Promise(async (resolve, reject) => {
@@ -28,22 +30,46 @@ function processLogout(userId) {
     });
 }
 
-async function isUserRegistred(userId) {
-    try {
-        return await User.findById(userId);   
-    } catch (error) {
-        return false;
-    }
+async function processSignIn(userSchema) {
+    const password = userSchema.password       
+    
+    const userData = await addUserDb(userSchema);
+    
+    await addPasswordDb(userData._id, password);
+    
+    return userData;
+}
+
+async function addPasswordDb(userId, password) {
+    const newPasswordSchema = new Password({
+        userId,
+        hash: await encryptPassword(password)
+    });
+
+    return await newPasswordSchema.save();
+}
+
+async function isUserRegistred(filters) {
+    const userData = await User.find(filters);
+    
+    if (userData.length === 0) throw Error("User not found");
+    return userData;
 }
 
 async function isSessionActive(userId) {
-    const data = await Session.find({userId, status: true});
-    return (data.length === 0) ? false: data[0]._id;
+    const sessionData = await Session.find({userId, status: true});
+    
+    if (sessionData.length === 0) return sessionData;
+    throw Error("Session is active");
 }
 
 async function isValidPassword(userId, password) {
-    const { hash } = await User.findById(userId);
-    return await bcrypt.compare(password, hash);
+    const { hash } = await Password.findOne({userId});
+    
+    const match = await bcrypt.compare(password, hash); 
+    
+    if (match) return userId;
+    throw Error("Password is invalid");
 }
 
 async function startSession(userId) {
@@ -69,11 +95,13 @@ async function finishSession(_id) {
 }
 
 async function addUserDb(schemaUser) {
+    delete schemaUser.password
+
     try {
         const newUser = new User(schemaUser);
         return await newUser.save();
-    } catch (error) {
-         return "";
+    } catch (err) {
+        return Error("Email ingresed already exist");
     }
 }
 
@@ -85,6 +113,5 @@ async function encryptPassword(password) {
 module.exports = {
     processLogin,
     processLogout,
-    encryptPassword,
-    addUserDb
+    processSignIn,
 }

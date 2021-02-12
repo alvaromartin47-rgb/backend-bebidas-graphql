@@ -4,29 +4,18 @@ import { raise } from '../utils';
 const Mutation = {
     
     async signIn(root, { input }, ctx) {
-        input.hash = await fcs.encryptPassword(input.password);
-        
-        // validar que pasa si el mail ya existe
-
-        delete input.password;
-        
-        return await fcs.addUserDb(input);
+        return await fcs.processSignIn(input);
     },
 
     async login(root, { input }, ctx) {
-        try {
-            return await fcs.processLogin(input.userId, input.password);
-        } catch (error) {
-            throw new raise(error);
-        }
-    
+        return await fcs.processLogin(input.userId, input.password);
     },
 
     async logout(root, { input }, ctx) {
         try {
             return await fcs.processLogout(input.userId);
         } catch (error) {
-            throw new raise(error);
+            return error;
         }
     }
 
