@@ -21,13 +21,9 @@ async function processLogin(userId, password) {
 // REFACTOR LOGOUT
 
 function processLogout(userId) {
-    return new Promise(async (resolve, reject) => {
-        const data = await isSessionActive(userId);
-        
-        if (!data) return reject("Session is not active");
-        
-        return resolve(await finishSession(data._id));
-    });
+    const { _id } = await isSessionActive(userId);
+    
+    return await finishSession(data._id);
 }
 
 async function processSignIn(userSchema) {

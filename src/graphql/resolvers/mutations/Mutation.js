@@ -12,11 +12,7 @@ const Mutation = {
     },
 
     async logout(root, { input }, ctx) {
-        try {
-            return await fcs.processLogout(input.userId);
-        } catch (error) {
-            return error;
-        }
+        return await fcs.processLogout(input.userId);
     }
 
 }
