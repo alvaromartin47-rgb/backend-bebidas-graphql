@@ -18,9 +18,7 @@ async function processLogin(userId, password) {
     return await startSession(userId);
 }
 
-// REFACTOR LOGOUT
-
-function processLogout(userId) {
+async function processLogout(userId) {
     const { _id } = await isSessionActive(userId);
     
     return await finishSession(data._id);
