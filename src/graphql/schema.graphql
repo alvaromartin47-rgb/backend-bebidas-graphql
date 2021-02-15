@@ -2,7 +2,7 @@
 # Principals
 
 type Query {
-    ping: String!
+    ping: String
     users: [User]
     sessions: [Session]
 }
