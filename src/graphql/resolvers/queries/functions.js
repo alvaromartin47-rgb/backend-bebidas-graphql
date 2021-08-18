@@ -1,13 +1,12 @@
-import User from '../../../models/User';
-import Session from '../../../models/Session';
-import jwt from 'jsonwebtoken';
+import UserSchema from '../../../models/UserSchema';
+import SessionSchema from '../../../models/SessionSchema';
 
 async function findUsers() {
-    return await User.find();
+    return await UserSchema.find();
 }
 
 async function findSessions() {
-    return await Session.find();
+    return await SessionSchema.find();
 }
 
 module.exports = {

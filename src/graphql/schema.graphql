@@ -5,12 +5,16 @@ type Query {
     ping: String
     users: [User]
     sessions: [Session]
+    verifyEmail: Message
 }
 
 type Mutation {
-    signIn(input: formSignIn): User
-    login(input: formLogin): Session
-    logout(input: formLogout): Session
+    signUp(input: formSignUp): Token
+    signIn(input: formSignIn): Token
+    logout(input: formLogout): Message
+    updateProfile(input: formUpdateProfile): Message
+    updatePassword(input: formUpdatePassword): Message
+    recover(email: String): Message
 }
 
 # Auxiliars
@@ -23,25 +27,43 @@ type User {
 }
 
 input formLogout {
-    userId: ID
-}
-
-input formSignIn {
-    name: String!
-    lastname: String!
-    password: String!
     email: String!
 }
 
-input formLogin {
-    userId: ID!
+input formSignUp {
+    name: String!
+    lastname: String!
+    email: String!
     password: String!
+}
+
+input formSignIn {
+    email: String!
+    password: String!
+}
+
+input formUpdateProfile {
+    name: String
+    lastname: String
+}
+
+input formUpdatePassword {
+    last_password: String!
+    new_password: String!
+}
+
+type Token {
+    access_token: String
 }
 
 type Session {
     _id: ID
-    userId: ID
+    user_id: ID
     status: Boolean
     start: String
     end: String
+}
+
+type Message {
+    message: String
 }

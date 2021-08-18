@@ -9,4 +9,4 @@ const sessionSchema = new Schema({
     status: {type: Boolean}
 });
 
-module.exports = mongoose.model('Session', sessionSchema);
+module.exports = mongoose.model('SessionSchema', sessionSchema);

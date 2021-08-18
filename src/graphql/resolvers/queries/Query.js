@@ -1,17 +1,23 @@
 import fcs from './functions';
 import { getPayload } from '../utils';
-import { raise } from '../utils';
 
 const Query = {
-    ping() {
+    ping(root, { input }, ctx) {
+        console.log(getPayload(ctx.token))
         return "pong";
     },
+
     users() {
         // const match = getPayload(ctx.token);
         return fcs.findUsers();
     },
+
     sessions() {
         return fcs.findSessions();
+    },
+
+    verifyEmail() {
+        return {};
     }
 }
 

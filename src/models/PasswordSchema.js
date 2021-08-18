@@ -7,4 +7,4 @@ const passwordSchema = new Schema({
     hash: {type: String}
 });
 
-module.exports = mongoose.model('Password', passwordSchema);
+module.exports = mongoose.model('PasswordSchema', passwordSchema);

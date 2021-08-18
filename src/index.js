@@ -5,8 +5,8 @@ import 'regenerator-runtime/runtime'
 
 env("src/.env");
 
-const serverTest = server.start({port: process.env.PORT}, () => {
-    console.log("Server listening on port " + process.env.PORT);
+const serverTest = server.start({port: process.env.PORT_LOGIN}, () => {
+    console.log("Server listening on port " + process.env.PORT_LOGIN);
 });
 
 module.exports = serverTest;

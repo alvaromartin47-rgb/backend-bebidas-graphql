@@ -1,20 +1,25 @@
 import fcs from './functions';
-import { raise } from '../utils';
 
 const Mutation = {
-    
+    async signUp(root, { input }, ctx) {
+        return await fcs.processSignUp(input);
+    },
+
     async signIn(root, { input }, ctx) {
-        return await fcs.processSignIn(input);
+        return await fcs.processSignIn(input.userId, input.password);
     },
 
-    async login(root, { input }, ctx) {
-        return await fcs.processLogin(input.userId, input.password);
+    updateProfile() {
+        return {};
     },
 
-    async logout(root, { input }, ctx) {
-        return await fcs.processLogout(input.userId);
-    }
+    updatePassword() {
+        return {};
+    },
 
+    recover() {
+        return {};
+    },
 }
 
 export default Mutation;
