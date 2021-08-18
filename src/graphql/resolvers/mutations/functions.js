@@ -12,7 +12,7 @@ async function getUser(email, password) {
 
 async function processSignIn(email, password) {
     const user = await getUser(email);
-    
+
     return await user.login(email, password);
 }
 

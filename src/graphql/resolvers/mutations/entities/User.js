@@ -25,12 +25,18 @@ export default class User {
     }
     
     async getId(email) {
-        return await UserSchema.find({email})._id;
+        try {
+            const data = await UserSchema.find({email});
+            return data[0]._id;
+        } catch(err) {
+            throw new Error("Email not exist");
+        }
+        
     }
 
     async login(email, password) {
         const id = await this.getId(email);
-
+        
         const pwd = new Password(password);
         await pwd.compareWithPasswordOf(id);
 

@@ -6,12 +6,12 @@ type Query {
     users: [User]
     sessions: [Session]
     verifyEmail: Message
+    logout: Message
 }
 
 type Mutation {
     signUp(input: formSignUp): Token
     signIn(input: formSignIn): Token
-    logout(input: formLogout): Message
     updateProfile(input: formUpdateProfile): Message
     updatePassword(input: formUpdatePassword): Message
     recover(email: String): Message
@@ -24,10 +24,6 @@ type User {
     name: String
     lastname: String
     email: String
-}
-
-input formLogout {
-    email: String!
 }
 
 input formSignUp {
@@ -62,6 +58,7 @@ type Session {
     status: Boolean
     start: String
     end: String
+    hash_token: String
 }
 
 type Message {

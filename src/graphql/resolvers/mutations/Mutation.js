@@ -6,7 +6,7 @@ const Mutation = {
     },
 
     async signIn(root, { input }, ctx) {
-        return await fcs.processSignIn(input.userId, input.password);
+        return await fcs.processSignIn(input.email, input.password);
     },
 
     updateProfile() {

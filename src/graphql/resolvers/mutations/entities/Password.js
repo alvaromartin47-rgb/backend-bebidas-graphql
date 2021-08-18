@@ -12,9 +12,13 @@ export default class Password {
         return await bcrypt.hash(this.password, saltRounds);
     }
 
+    async compare(hash) {
+        return await bcrypt.compare(this.password, hash);
+    }
+
     async compareWithPasswordOf(userId) {
         const { hash } = await PasswordSchema.findOne({userId});
-        const match = await bcrypt.compare(this.password, hash); 
+        const match = await this.compare(hash); 
         
         if (match) return userId;
         throw Error("Password is invalid");

@@ -2,22 +2,29 @@ import fcs from './functions';
 import { getPayload } from '../utils';
 
 const Query = {
-    ping(root, { input }, ctx) {
-        console.log(getPayload(ctx.token))
+    async ping(root, { input }, ctx) {
+        // await getPayload(ctx.token);
         return "pong";
     },
 
-    users() {
-        // const match = getPayload(ctx.token);
+    async users() {
+        // await getPayload(ctx.token);
         return fcs.findUsers();
     },
 
-    sessions() {
+    async sessions() {
+        // await getPayload(ctx.token);
         return fcs.findSessions();
     },
 
-    verifyEmail() {
+    async verifyEmail() {
+        // await getPayload(ctx.token);
         return {};
+    },
+
+    async logout(root, { input }, ctx) {
+        // await getPayload(ctx.token);
+        return await fcs.processLogout(ctx.token);
     }
 }
 

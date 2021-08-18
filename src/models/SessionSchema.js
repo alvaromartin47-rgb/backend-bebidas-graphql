@@ -6,7 +6,7 @@ const sessionSchema = new Schema({
     userId: {type: String},
     start: {type: String},
     end: {type: String},
-    status: {type: Boolean}
+    status: {type: Boolean},
 });
 
 module.exports = mongoose.model('SessionSchema', sessionSchema);
