@@ -9,7 +9,8 @@ const userSchema = new Schema({
     email: {
         type: String,
         unique: true
-    }
+    },
+    account_verified: {type: Boolean}
 });
 
 userSchema.plugin(uniqueValidator);

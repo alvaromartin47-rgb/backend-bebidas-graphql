@@ -1,20 +1,23 @@
-import jwt, { JsonWebTokenError } from 'jsonwebtoken';
-import env, { data } from 'node-env-file';
+import jwt from 'jsonwebtoken';
+import env from 'node-env-file';
 import Session from './mutations/entities/Session';
+import Token from '../entities/Token';
 
 env("src/.env");
 
-async function getPayload(token) {
-    const session = new Session();
-    const { session_id } = jwt.decode(token);
+async function verificatorA(token) {
+    if (!token) throw new Error("Access token is required");
+    const { session_id, account_verified } = Token.decode(token);
     
     try {
-        const match = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+        const match = Token.verify(token);
 
         // Validación extra por si el token no expiro pero el usuario
-        // cerró sesión.
+        // cerró sesión y por si la cuenta no esta verificada.
 
-        if (!await session.status(session_id)) throw new Error();
+        if (!await Session.status(session_id) || !account_verified) {
+            throw new Error();
+        }
         
         return match
     } catch(err) {
@@ -22,8 +25,8 @@ async function getPayload(token) {
             // El objetivo del condicional es que solo se utilice cuando
             // el token expiró pero no se cerró la sesion en la db
             
-            if (await session.status(session_id)) {
-                await session.finishSession(session_id, {status: false});
+            if (await Session.status(session_id)) {
+                await Session.finishSession(session_id, {status: false});
             }
 
             throw new Error("Token expired");
@@ -36,6 +39,16 @@ async function getPayload(token) {
     }
 }
 
+async function verificatorB() {
+    if (!token) throw new Error("Access token is required");
+    try {
+        const match = Token.verify(token);
+    } catch(err) {
+        throw new Error("Token is invalid");
+    }
+}
+
 module.exports = {
-    getPayload
+    verificatorA,
+    verificatorB
 }

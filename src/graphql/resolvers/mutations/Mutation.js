@@ -13,12 +13,16 @@ const Mutation = {
         return {};
     },
 
-    updatePassword() {
-        return {};
+    async updatePassword(root, { input }, ctx) {
+        return await fcs.processUpdatePassword(
+            ctx.token,
+            input.last_password,
+            input.new_password
+        );
     },
 
-    recover() {
-        return {};
+    async recover(root, { input }, ctx) {
+        return await fcs.processRecover(input.email);
     },
 }
 

@@ -12,13 +12,16 @@ export default class Registrator {
         const password = this.dataUser.password;
         delete this.dataUser.password;
 
-        try {
-            const newUser = new UserSchema(this.dataUser);
-            this.dataUser.password = password;
-            return await newUser.save();
-        } catch(err) {
-            return Error("Email ingresed already exist");
-        }
+        const data = await UserSchema.find({
+            email: this.dataUser.email
+        });
+    
+        if (data.length != 0) throw Error("Email ingresed already exist");
+        
+        const newUser = new UserSchema(this.dataUser);
+        this.dataUser.password = password;
+
+        return await newUser.save();
     }
 
     async addPasswordDb(userId) {
@@ -32,7 +35,7 @@ export default class Registrator {
         return await newPasswordSchema.save();
     }
 
-    async register() {
+    async register() {    
         const { _id } =  await this.addUserDb();
         await this.addPasswordDb(_id);
     }

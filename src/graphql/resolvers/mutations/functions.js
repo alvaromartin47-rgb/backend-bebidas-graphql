@@ -1,6 +1,8 @@
 import env from 'node-env-file';
 import User from './entities/User';
 import UserSchema from '../../../models/UserSchema';
+import EmailRecovery from '../../entities/EmailRecovery';
+import Sender from '../../entities/Sender';
 
 env("src/.env");
 
@@ -22,6 +24,15 @@ async function processSignUp(userSchema) {
     return await user.register(userSchema.email, userSchema.password);
 }
 
+async function processRecover(email) {
+    const sender = new Sender(new EmailRecovery(email));
+    return await sender.sendEmail();
+}
+
+async function processUpdatePassword(token, last_pwd, new_pwd) {
+    // implementacion (en el token esta el id)
+}
+
 // async function finishSession(_id) {
 //     return await Session.findByIdAndUpdate(_id, {
 //         status: false,
@@ -31,5 +42,6 @@ async function processSignUp(userSchema) {
 
 module.exports = {
     processSignUp,
-    processSignIn
+    processSignIn,
+    processRecover
 }

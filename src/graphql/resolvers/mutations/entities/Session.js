@@ -1,25 +1,26 @@
 import SessionSchema from '../.../../../../../models/SessionSchema';
-import jwt from 'jsonwebtoken';
-import Password from './Password';
+import UserSchema from '../.../../../../../models/UserSchema';
+import Token from '../../../entities/Token';
+
 
 export default class Session {
 
     async startSession(id) {
         const { _id } = await this.addSessionDb(id);
+        const { account_verified } = await UserSchema.findById(id);
         
         const body = {
             id,
             session_id: _id,
+            account_verified,
         }
 
-        const access_token = jwt.sign(body, process.env.ACCESS_TOKEN_SECRET, {
-            expiresIn: 60 * 3
-        });
+        const access_token = Token.generate(body, 60*3);
+        const { session_id, iat, exp } = Token.decode(access_token);
         
-        const data = jwt.decode(access_token);
-        await SessionSchema.findByIdAndUpdate(data.session_id, {
-            start: data.iat,
-            end: data.exp}
+        await SessionSchema.findByIdAndUpdate(session_id, {
+            start: iat,
+            end: exp}
         );
         
         return {access_token};
@@ -36,16 +37,13 @@ export default class Session {
         return await newSession.save();
     }
 
-    async getId(hash_token) {
-        const data = await SessionSchema.find({hash_token});
-        return data[0]._id;
+    static async finishSession(session_id, update) {
+        await SessionSchema.findByIdAndUpdate(session_id, update, {new: true});
+        
+        return {message: "Session finalized"};
     }
 
-    async finishSession(session_id, update) {
-        return await SessionSchema.findByIdAndUpdate(session_id, update, {new: true});
-    }
-
-    async status(session_id) {
+    static async status(session_id) {
         const { status } = await SessionSchema.findById(session_id);
         return status;
     }

@@ -5,16 +5,17 @@ type Query {
     ping: String
     users: [User]
     sessions: [Session]
-    verifyEmail: Message
+    verifyEmail: msjToken
+    reSendEmailVerification: Message
     logout: Message
 }
 
 type Mutation {
-    signUp(input: formSignUp): Token
+    signUp(input: formSignUp): msjToken
     signIn(input: formSignIn): Token
     updateProfile(input: formUpdateProfile): Message
     updatePassword(input: formUpdatePassword): Message
-    recover(email: String): Message
+    recover(input: formRecover): Message
 }
 
 # Auxiliars
@@ -24,6 +25,11 @@ type User {
     name: String
     lastname: String
     email: String
+    account_verified: Boolean
+}
+
+input formRecover {
+    email: String!
 }
 
 input formSignUp {
@@ -36,6 +42,11 @@ input formSignUp {
 input formSignIn {
     email: String!
     password: String!
+}
+
+type msjToken {
+    message: String
+    access_token: String
 }
 
 input formUpdateProfile {
