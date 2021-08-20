@@ -1,4 +1,5 @@
 import fcs from './functions';
+import { verificatorA } from '../utils'
 
 const Mutation = {
     async signUp(root, { input }, ctx) {
@@ -9,7 +10,8 @@ const Mutation = {
         return await fcs.processSignIn(input.email, input.password);
     },
 
-    updateProfile() {
+    async updateProfile(root, { input }, ctx) {
+        await verificatorA(ctx.token);
         return {};
     },
 

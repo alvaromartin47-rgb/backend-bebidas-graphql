@@ -3,7 +3,7 @@
 
 type Query {
     ping: String
-    users: [User]
+    users(filters: UserInput): [User]
     sessions: [Session]
     verifyEmail: msjToken
     reSendEmailVerification: Message
@@ -19,6 +19,14 @@ type Mutation {
 }
 
 # Auxiliars
+
+input UserInput {
+    _id: ID
+    name: String
+    lastname: String
+    email: String
+    account_verified: Boolean
+}
 
 type User {
     _id: ID

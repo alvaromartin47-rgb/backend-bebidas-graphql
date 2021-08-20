@@ -6,7 +6,10 @@
   "scripts": {
     "build": "babel src -d dist --source-maps",
     "start": "nodemon src/index.js --exec babel-node",
-    "serve": "node dist/index.js"
+    "serve": "node dist/index.js",
+    "dev": "./scripts/restart.sh",
+    "test": "python3 ./test/index.py",
+    "close": "./scripts/close.sh"
   },
   "keywords": [],
   "author": "",

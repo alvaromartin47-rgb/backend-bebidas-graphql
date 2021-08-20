@@ -5,8 +5,9 @@ import Session from '../mutations/entities/Session';
 import Token from '../../entities/Token';
 import Sender from '../../entities/Sender';
 
-async function findUsers() {
-    return await UserSchema.find();
+async function findUsers(filters) {
+    if (!filters) filters = {};
+    return await UserSchema.find(filters);
 }
 
 async function findSessions() {

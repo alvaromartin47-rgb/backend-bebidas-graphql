@@ -10,9 +10,9 @@ const Query = {
         return "pong";
     },
 
-    async users(root, { input }, ctx) {
-        await verificatorA(ctx.token);
-        return fcs.findUsers();
+    async users(root, { filters }, ctx) {
+        // await verificatorA(ctx.token);
+        return fcs.findUsers(filters);
     },
 
     async sessions(root, { input }, ctx) {
