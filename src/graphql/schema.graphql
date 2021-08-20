@@ -16,6 +16,7 @@ type Mutation {
     updateProfile(input: formUpdateProfile): Message
     updatePassword(input: formUpdatePassword): Message
     recover(input: formRecover): Message
+    updatePasswordForRecovery(input: formUpdatePasswordForRecovery): Message
 }
 
 # Auxiliars
@@ -64,6 +65,10 @@ input formUpdateProfile {
 
 input formUpdatePassword {
     last_password: String!
+    new_password: String!
+}
+
+input formUpdatePasswordForRecovery {
     new_password: String!
 }
 

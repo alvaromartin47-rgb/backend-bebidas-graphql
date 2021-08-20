@@ -33,15 +33,14 @@ async function processUpdatePassword(token, last_pwd, new_pwd) {
     // implementacion (en el token esta el id)
 }
 
-// async function finishSession(_id) {
-//     return await Session.findByIdAndUpdate(_id, {
-//         status: false,
-//         end: Date.now()
-//     }, {new: true});
-// }
+async function processUpdatePasswordForRecovery(token, new_pwd) {
+    // implementación
+}
 
 module.exports = {
     processSignUp,
     processSignIn,
-    processRecover
+    processRecover,
+    processUpdatePassword,
+    processUpdatePasswordForRecovery
 }

@@ -11,7 +11,7 @@ const Query = {
     },
 
     async users(root, { filters }, ctx) {
-        // await verificatorA(ctx.token);
+        await verificatorA(ctx.token);
         return fcs.findUsers(filters);
     },
 
