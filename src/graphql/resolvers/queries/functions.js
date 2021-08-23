@@ -55,10 +55,17 @@ async function processReSendEmailVerification(access_token) {
     return await sender.sendEmail();
 }
 
+async function processProfile(access_token) {
+    const { id } = Token.decode(access_token);
+    
+    return await UserSchema.findById(id);
+}
+
 module.exports = {
     findUsers,
     findSessions,
     processLogout,
     processVerifyEmail,
-    processReSendEmailVerification
+    processReSendEmailVerification,
+    processProfile
 }

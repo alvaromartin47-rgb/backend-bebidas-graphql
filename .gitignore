@@ -1,3 +1,6 @@
 node_modules
 /src/.env
 /src/sv_configs
+test/gmail.py
+test/credentials.json
+test/token.json

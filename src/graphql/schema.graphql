@@ -7,6 +7,7 @@ type Query {
     sessions: [Session]
     verifyEmail: msjToken
     reSendEmailVerification: Message
+    profile: User
     logout: Message
 }
 

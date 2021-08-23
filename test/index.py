@@ -1,6 +1,35 @@
 import requests
 import unittest
 
+# Auxiliars
+
+def get_token_signUp(url):
+    mutation = '''
+    mutation {
+        signUp(input: {
+            name: "Alvaro",
+            lastname: "Martin",
+            password: "riverplate2018",
+            email: "alvaro.martin1307@gmail.com.ar"
+        }) {
+            access_token
+        }
+    }
+    '''
+    
+    response = requests.post(url, json={'query': mutation})
+
+    return response.json()['data']['signUp']['access_token']
+
+def _query(url, query, token):
+    response = requests.post(
+        url,
+        json={'query': query},
+        headers={"Authorization": f"{token}"}
+    )
+
+    return response.json()
+
 class SignUp(unittest.TestCase):
     data_user = {
         "name": "Alvaro",
@@ -11,7 +40,7 @@ class SignUp(unittest.TestCase):
 
     url = "http://localhost:4000/"
 
-    access_token_signUp = get_token_signUp(url, data_user)
+    access_token_signUp = get_token_signUp(url)
     
     def test01AlRegistrarseDevuelveTokenQueNoTieneAccessoARecursoPing(self):
         query = '''
@@ -46,12 +75,10 @@ class SignUp(unittest.TestCase):
         
         self.assertEquals(message, expected)
 
-    def testAlRegistrarseSeAgregaUnNuevoUsuarioALaBaseDeDatos(self):
+    def test03AlRegistrarseSeAgregaUnNuevoUsuarioALaBaseDeDatos(self):
         query = '''
         {
-            users(filters: {
-                email: "alvaro.martin1307@gmail.com.ar"
-            }) {
+            profile {
                 name
                 lastname
                 email
@@ -60,41 +87,33 @@ class SignUp(unittest.TestCase):
         '''
 
         response = _query(self.url, query, self.access_token_signUp)
-
-        content = response["data"]["users"][0]
+        content = response["data"]["profile"][0]
 
         self.assertEquals(content["name"], self.data_user["name"])
         self.assertEquals(content["lastname"], self.data_user["lastname"])
         self.assertEquals(content["email"], self.data_user["email"])
 
-# Auxiliars
-
-def get_token_signUp(url, data_user):
-    mutation = '''
-    mutation {
-        signUp(input: {
-            name: "Alvaro",
-            lastname: "Martin",
-            password: "riverplate2018",
-            email: "alvaro.martin1307@gmail.com.ar"
-        }) {
-            access_token
+    def test04AlRegistrarseElUsuarioHaceLogoutYSeInhabilitaElToken(self):
+        query = '''
+        {
+            logout {
+                message
+            }
         }
-    }
-    '''
-    
-    response = requests.post(url, json={'query': mutation})
+        '''
 
-    return response.json()['data']['signUp']['access_token']
+        response = _query(self.url, query, self.access_token_signUp)
+        content = response["data"]["logout"]
+        expected = ""
 
-def _query(url, query, token):
-    response = requests.post(
-        url,
-        json={'query': query},
-        headers={"Authorization": f"{token}"}
-    )
+        self.assertEquals(expected, content["message"])
+        
+        response = _query(self.url, query, self.access_token_signUp)
+        recived = response["errors"]["message"]
+        expected = "Token is invalid"
 
-    return response.json()
+        self.assertEquals(expected, recived)
+
 
 ##########################################################################################
 

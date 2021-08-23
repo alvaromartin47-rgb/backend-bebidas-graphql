@@ -20,8 +20,8 @@ export default class Session {
         
         await SessionSchema.findByIdAndUpdate(session_id, {
             start: iat,
-            end: exp}
-        );
+            end: exp
+        });
         
         return {access_token};
     }

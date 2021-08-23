@@ -30,11 +30,11 @@ async function processRecover(email) {
 }
 
 async function processUpdatePassword(token, last_pwd, new_pwd) {
-    // implementacion (en el token esta el id)
+    return {message: "Not implemented"}
 }
 
 async function processUpdatePasswordForRecovery(token, new_pwd) {
-    // implementación
+    return {message: "Not implemented"}
 }
 
 module.exports = {

@@ -1,4 +1,3 @@
-import jwt from 'jsonwebtoken';
 import env from 'node-env-file';
 import Session from './mutations/entities/Session';
 import Token from '../entities/Token';
@@ -16,6 +15,8 @@ async function verificatorA(token) {
         // cerró sesión y por si la cuenta no esta verificada.
 
         if (!await Session.status(session_id) || !account_verified) {
+            // Modificar para hacer logout con la cuenta no verificada
+            
             throw new Error();
         }
         
@@ -24,7 +25,7 @@ async function verificatorA(token) {
         if (err.name == "TokenExpiredError") {
             // El objetivo del condicional es que solo se utilice cuando
             // el token expiró pero no se cerró la sesion en la db
-            
+
             if (await Session.status(session_id)) {
                 await Session.finishSession(session_id, {status: false});
             }
@@ -39,7 +40,7 @@ async function verificatorA(token) {
     }
 }
 
-async function verificatorB() {
+async function verificatorB(token) {
     if (!token) throw new Error("Access token is required");
     try {
         const match = Token.verify(token);
