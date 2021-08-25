@@ -1,6 +1,67 @@
 version: "3"
 
 services: 
+        
+    socket:
+        container_name: socket
+        build:
+            context: ./dockerfiles
+            dockerfile: node.dockerfile
+        image: api-socket-telegram
+        ports:
+            - 6000:6000
+        links:
+            - db
+        depends_on: 
+            - db
+        volumes: 
+            - ./src/services/chat:/app
+
+    graphql:
+        container_name: graphql
+        build:
+            context: ./dockerfiles
+            dockerfile: node.dockerfile
+        image: api-graphql-bebidas
+        ports:
+            - 4000:4000
+        links:
+            - db
+        depends_on: 
+            - db
+        volumes: 
+            - ./:/app
+    
+    local_tunnel_socket:
+        container_name: local_tunel_socket
+        build:
+            context: ./dockerfiles
+            dockerfile: localtunnel.dockerfile
+        image: sv-localtunnel
+        links:
+            - socket
+        depends_on: 
+            - socket
+        command: "lt -p 6000 -l socket -s socket"
+
+    local_tunnel_graphql:
+        container_name: local_tunel_graphql
+        build:
+            context: ./dockerfiles
+            dockerfile: localtunnel.dockerfile
+        image: sv-localtunnel
+        links:
+            - graphql
+        depends_on: 
+            - graphql
+        command: "lt -p 4000 -l graphql -s graphql"
+
+    db:
+        container_name: database
+        image: mongo
+        ports: [27017:27017]
+        restart: always
+
     # duckdns:
     #     image: ghcr.io/linuxserver/duckdns
     #     container_name: duckdns
@@ -14,35 +75,3 @@ services:
     #     volumes:
     #         - ./src/sv_configs/duckdns/config:/config
     #     restart: unless-stopped
-        
-    # api:
-    #     container_name: api
-    #     build:
-    #         context: .
-    #         dockerfile: Dockerfile
-    #     image: api-graphql
-    #     ports:
-    #         - "4000:4000"
-    #     depends_on: 
-    #         - db
-
-    # webserver:
-    #     image: nginx:mainline-alpine
-    #     container_name: webserver
-    #     restart: unless-stopped
-    #     ports:
-    #         - "80:80"
-    #         - "443:443"
-    #     volumes:
-    #         - ./src/sv_configs/ssl/certificates:/etc/letsencrypt/live/api-nodejs.duckdns.org
-    #         - ./src/sv_configs/nginx-conf:/etc/nginx/conf.d
-    #         - ./src/sv_configs/ssl/dhparam:/etc/ssl/certs
-    #     depends_on:
-    #         - api
-    #         - duckdns
-
-    db:
-        container_name: database
-        image: mongo
-        ports: [27017:27017]
-        restart: always
