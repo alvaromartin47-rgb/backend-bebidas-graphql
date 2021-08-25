@@ -7,15 +7,15 @@ import Sender from '../../../entities/Sender';
 
 export default class User {
 
-    constructor(name=null, lastname=null) {
-        this.name = name;
-        this.lastname = lastname;
+    constructor(data=null) {
+        this.data = data;
     }
 
     async register(email, password) {
         const dataUser = {
-            name: this.name,
-            lastname: this.lastname,
+            name: this.data.name,
+            lastname: this.data.lastname,
+            phone: this.data.phone,
             account_verified: false,
             email,
             password

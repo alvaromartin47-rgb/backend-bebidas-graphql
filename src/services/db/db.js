@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 
 const DB_NAME = "users";
 
-const db = mongoose.connect('mongodb://localhost/' + (DB_NAME), {
+const db = mongoose.connect('mongodb://db/' + (DB_NAME), {
     useCreateIndex: true,
     useNewUrlParser: true,
     useFindAndModify: false,

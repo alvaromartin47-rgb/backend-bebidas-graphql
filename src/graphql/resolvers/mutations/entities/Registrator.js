@@ -26,7 +26,7 @@ export default class Registrator {
 
     async addPasswordDb(userId) {
         const password = new Password(this.dataUser.password);
-        
+
         const newPasswordSchema = new PasswordSchema({
             userId,
             hash: await password.encrypt()

@@ -19,9 +19,15 @@ async function processSignIn(email, password) {
 }
 
 async function processSignUp(userSchema) {
-    const user = new User(userSchema.name, userSchema.lastname);
+    const email = userSchema.email;
+    const password = userSchema.password;
+    
+    delete userSchema.email;
+    delete userSchema.password;
 
-    return await user.register(userSchema.email, userSchema.password);
+    const user = new User(userSchema);
+
+    return await user.register(email, password);
 }
 
 async function processRecover(email) {

@@ -9,6 +9,7 @@ type Query {
     reSendEmailVerification: Message
     profile: User
     logout: Message
+    orders: [Order]
 }
 
 type Mutation {
@@ -18,9 +19,32 @@ type Mutation {
     updatePassword(input: formUpdatePassword): Message
     recover(input: formRecover): Message
     updatePasswordForRecovery(input: formUpdatePasswordForRecovery): Message
+    addOrder(input: [FormOrderProduct]): ID
 }
 
 # Auxiliars
+
+type OrderProduct {
+    product: Product
+    quantity: Int
+}
+
+input FormOrderProduct {
+    product_id: ID!
+    quantity: Int!
+}
+
+type Order {
+    _id: ID
+    user_id: ID
+    created_at: String
+    data: [OrderProduct]
+}
+
+type Product {
+    name: String
+    quantity: Int
+}
 
 input UserInput {
     _id: ID
@@ -36,6 +60,7 @@ type User {
     lastname: String
     email: String
     account_verified: Boolean
+    phone: String
 }
 
 input formRecover {
@@ -47,6 +72,7 @@ input formSignUp {
     lastname: String!
     email: String!
     password: String!
+    phone: String!
 }
 
 input formSignIn {
