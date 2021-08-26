@@ -5,8 +5,8 @@ services:
     socket:
         container_name: socket
         build:
-            context: ./dockerfiles
-            dockerfile: node.dockerfile
+            context: ./src/services/chat
+            dockerfile: Dockerfile
         image: api-socket-telegram
         ports:
             - 6000:6000
@@ -15,13 +15,14 @@ services:
         depends_on: 
             - db
         volumes: 
-            - ./src/services/chat:/app
+            - ./src/services/chat:/app/service
+        command: /bin/sh /app/service/scripts/execute-socket.sh
 
     graphql:
         container_name: graphql
         build:
-            context: ./dockerfiles
-            dockerfile: node.dockerfile
+            context: .
+            dockerfile: Dockerfile
         image: api-graphql-bebidas
         ports:
             - 4000:4000
@@ -30,7 +31,9 @@ services:
         depends_on: 
             - db
         volumes: 
-            - ./:/app
+            - ./:/app/api
+        command: /bin/sh /app/api/scripts/execute-graphql.sh
+        
     
     local_tunnel_socket:
         container_name: local_tunel_socket

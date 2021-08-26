@@ -11,7 +11,7 @@ const userSchema = new Schema({
         unique: true
     },
     account_verified: {type: Boolean},
-    phone: {type: String}
+    phone: {type: String},
 });
 
 userSchema.plugin(uniqueValidator);
