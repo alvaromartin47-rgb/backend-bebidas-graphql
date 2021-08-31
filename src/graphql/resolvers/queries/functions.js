@@ -1,5 +1,7 @@
 import UserSchema from '../../../models/UserSchema';
 import SessionSchema from '../../../models/SessionSchema';
+import CategorySchema from '../../../models/CategorySchema';
+import ProductSchema from '../../../models/ProductSchema';
 import EmailVerification from '../../entities/EmailVerification'
 import Session from '../mutations/entities/Session';
 import Token from '../../entities/Token';
@@ -14,21 +16,32 @@ async function findSessions() {
     return await SessionSchema.find();
 }
 
+async function getProductsForId(products) {
+    const newProducts = [];
+
+    for (let i=0; i < products.length; i++) {
+        const product = await ProductSchema.findById(products[i]);
+        newProducts.push(product);
+    }
+
+    return newProducts;
+}
+
 async function generateResponse(category) {
     const newCategory = category;
 
-    const products = getProductsForId(newCategory.products);
+    const products = await getProductsForId(newCategory.products);
     newCategory.products = products;
 
     if (newCategory.sub_categories.length == 0) return newCategory;
-
+    
     for (let i=0; i < newCategory.sub_categories.length; i++) {
-        const sub_category = newCategory.sub_categories[i];
+        const idSubCategory = newCategory.sub_categories[i];
+        const category = await CategorySchema.findById(idSubCategory);
         
-        obj = generateResponse(sub_category);
-        
-        newCategory.sub_categories.splice(i, 1);
-        newCategory.sub_categories.splice(i, 0, obj);
+        const obj = await generateResponse(category);
+
+        newCategory.sub_categories[i] = obj;
     }
     
     return newCategory; 
@@ -38,8 +51,14 @@ async function generateResponse(category) {
 async function findCategories(filters) {
     if (!filters) filters = {};
     const category = await CategorySchema.find(filters);
+    const categories = [];
 
-    return await generateResponse(category);
+    for (let i=0; i < category.length; i++) {
+        const obj = await generateResponse(category[i]);
+        categories.push(obj);
+    }
+    
+    return categories;
 }
 
 async function processLogout(access_token) {

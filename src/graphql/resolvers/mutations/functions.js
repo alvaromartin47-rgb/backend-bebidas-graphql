@@ -1,6 +1,8 @@
 import env from 'node-env-file';
 import User from './entities/User';
 import UserSchema from '../../../models/UserSchema';
+import ProductSchema from '../../../models/ProductSchema';
+import CategorySchema from '../../../models/CategorySchema';
 import EmailRecovery from '../../entities/EmailRecovery';
 import Sender from '../../entities/Sender';
 
@@ -43,10 +45,26 @@ async function processUpdatePasswordForRecovery(token, new_pwd) {
     return {message: "Not implemented"}
 }
 
+async function processAddCategory(category) {
+    const data = new CategorySchema(category);
+    const { _id } = await data.save();
+
+    return _id;
+}
+
+async function processAddProduct(product) {
+    const data = new ProductSchema(product);
+    const { _id } = await data.save();
+
+    return _id;
+}
+
 module.exports = {
     processSignUp,
     processSignIn,
     processRecover,
     processUpdatePassword,
-    processUpdatePasswordForRecovery
+    processUpdatePasswordForRecovery,
+    processAddCategory,
+    processAddProduct
 }

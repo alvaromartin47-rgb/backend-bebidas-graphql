@@ -34,6 +34,14 @@ const Mutation = {
             ctx.token,
             input.new_password
         );
+    },
+
+    async addCategory(root, { input }, ctx) {
+        return await fcs.processAddCategory(input);
+    },
+
+    async addProduct(root, { input }, ctx) {
+        return await fcs.processAddProduct(input);
     }
 }
 

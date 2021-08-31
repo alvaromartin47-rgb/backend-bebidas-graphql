@@ -21,9 +21,29 @@ type Mutation {
     recover(input: formRecover): Message
     updatePasswordForRecovery(input: formUpdatePasswordForRecovery): Message
     addOrder(input: [FormOrderProduct]): ID
+    addProduct(input: FormAddProduct): ID
+    addCategory(input: FormAddCategory): ID
 }
 
 # Auxiliars
+
+input FormAddCategory {
+    _id: ID
+    name: String
+    products: [ID]
+    sub_categories: [ID]
+}
+
+input FormAddProduct {
+    name: String
+    description: String
+    stock: Int
+    visible: Boolean
+    photo: String
+    max_order: Int
+    discount: Int
+    promotion: Boolean
+}
 
 type Category {
     _id: ID
@@ -54,6 +74,8 @@ type Order {
 }
 
 type Product {
+    _id: ID
+    price: String
     name: String
     description: String
     stock: Int
