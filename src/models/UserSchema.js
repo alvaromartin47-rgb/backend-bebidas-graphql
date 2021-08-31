@@ -15,7 +15,8 @@ const userSchema = new Schema({
     roles: [{
         ref: "RoleSchema",
         type: Schema.Types.ObjectId
-    }]
+    }],
+    price: {type: String}
 });
 
 userSchema.plugin(uniqueValidator);
