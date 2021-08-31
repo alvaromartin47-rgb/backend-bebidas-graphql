@@ -34,7 +34,6 @@ services:
             - ./:/app/api
         command: /bin/sh /app/api/scripts/execute-graphql.sh
         
-    
     local_tunnel_socket:
         container_name: local_tunel_socket
         build:

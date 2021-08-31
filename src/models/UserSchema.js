@@ -13,7 +13,7 @@ const userSchema = new Schema({
     account_verified: {type: Boolean},
     phone: {type: String},
     roles: [{
-        ref: "Role",
+        ref: "RoleSchema",
         type: Schema.Types.ObjectId
     }]
 });

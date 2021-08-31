@@ -70,6 +70,7 @@ input UserInput {
     lastname: String
     email: String
     account_verified: Boolean
+    phone: String
 }
 
 type User {
