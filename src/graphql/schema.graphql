@@ -10,6 +10,7 @@ type Query {
     profile: User
     logout: Message
     orders: [Order]
+    categories(filters: CategoriesInput): [Category]
 }
 
 type Mutation {
@@ -23,6 +24,17 @@ type Mutation {
 }
 
 # Auxiliars
+
+type Category {
+    _id: ID
+    name: String
+    products: [Product]
+    sub_categories: [Category]
+}
+
+input CategoriesInput {
+    name: String
+}
 
 type OrderProduct {
     product: Product
@@ -43,7 +55,13 @@ type Order {
 
 type Product {
     name: String
-    quantity: Int
+    description: String
+    stock: Int
+    visible: Boolean
+    photo: String
+    max_order: Int
+    discount: Int
+    promotion: Boolean
 }
 
 input UserInput {

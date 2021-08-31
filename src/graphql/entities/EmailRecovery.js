@@ -10,13 +10,13 @@ export default class EmailRecovery {
 
     async generateToken() {
         const id = await User.getId(this.email);
-
+        
         const body = {
-            type: "Recover",
-            id
+            role: "UserRecover",
+            id,
         }
 
-        return Token.generate(body, 60*5);
+        return Token.generate(body, process.env.EXPIRATION_RECOVER);
     }
 
     async sendEmail() {

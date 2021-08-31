@@ -11,11 +11,12 @@ const Mutation = {
     },
 
     async updateProfile(root, { input }, ctx) {
-        // await verificatorA(ctx.token);
+        await isUser(ctx.token);
         return {};
     },
 
     async updatePassword(root, { input }, ctx) {
+        await isUser(ctx.token);
         return await fcs.processUpdatePassword(
             ctx.token,
             input.last_password,
@@ -28,7 +29,7 @@ const Mutation = {
     },
 
     async updatePasswordForRecovery(root, { input }, ctx) {
-        // await verificatorB(ctx.token);
+        await isUserRecover(ctx.token);
         return await fcs.processUpdatePasswordForRecovery(
             ctx.token,
             input.new_password

@@ -1,42 +1,44 @@
 import fcs from './functions';
-import { verificatorA, verificatorB } from '../utils';
-
-// Los verificadores de identidad deben chequear que la cuenta esté verificada para que
-// se pueda acceder a recursos excepto ciertos casos que se especifican
+import { 
+    isUserNotVerified,
+    isRoleValid,
+    isRoleValidAndVerifyStatusSession
+} from '../utils';
 
 const Query = {
     async ping(root, { input }, ctx) {
-        // await verificatorA(ctx.token);
         return "pong";
     },
 
     async users(root, { filters }, ctx) {
-        //await verificatorA(ctx.token);
-        return fcs.findUsers(filters);
+        return await fcs.findUsers(filters);
     },
 
     async sessions(root, { input }, ctx) {
-        //await verificatorA(ctx.token);
-        return fcs.findSessions();
+        return await fcs.findSessions();
+    },
+
+    async categories(root, { filters }, ctx) {
+        return await fcs.findCategories(filters);
     },
 
     async verifyEmail(root, { input }, ctx) {
-        // await verificatorB(ctx.token);
+        await isUserNotVerified(ctx.token);
         return await fcs.processVerifyEmail(ctx.token);
     },
 
     async logout(root, { input }, ctx) {
-        // await verificatorA(ctx.token);
+        await isRoleValidAndVerifyStatusSession(ctx.token);
         return await fcs.processLogout(ctx.token);
     },
 
     async reSendEmailVerification(root, { input }, ctx) {
-        // await verificatorB(ctx.token);
+        await isUserNotVerified(ctx.token);
         return await fcs.processReSendEmailVerification(ctx.token);
     },
     
     async profile(root, { input }, ctx) {
-        //await verificatorB(ctx.token);
+        await isRoleValid(ctx.token);
         return await fcs.processProfile(ctx.token);
     }
 }

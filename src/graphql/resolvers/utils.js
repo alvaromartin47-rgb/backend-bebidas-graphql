@@ -4,21 +4,44 @@ import Token from '../entities/Token';
 
 env("src/.env");
 
-async function verificatorA(token) {
+// const match = Token.verify(token);
+
+async function isRoleValid(accessToken) {
+    // Debe verificar si el token es valido, y debe verificar si
+    // el rol que tiene asignado el token pertenece a la base de datos
+    // de roles.
+}
+
+async function isUserNotVerified(accessToken) {
+    // Debe verificar si el token es valido, y debe verificar si
+    // el rol que tiene asignado el token es exclusivamente UserNotVerified
+}
+
+async function isUser(accessToken) {
+    // Debe verificar si el token es valido, y debe verificar si
+    // el rol que tiene asignado el token es exclusivamente User
+}
+
+async function isUserRecover(accessToken) {
+    // Debe verificar si el token es valido, y debe verificar si
+    // el rol que tiene asignado el token es exclusivamente UserRecover
+}
+
+function verifyExistToken(accessToken) {
     if (!token) throw new Error("Access token is required");
-    const { session_id, account_verified } = Token.decode(token);
+}
+
+async function isRoleValidAndVerifyStatusSession(accessToken) {
+    verifyExistToken(accessToken);
+    const { session_id } = Token.decode(accessToken);
     
     try {
-        const match = Token.verify(token);
+        isRoleValid(accessToken);
 
         // Validación extra por si el token no expiro pero el usuario
-        // cerró sesión y por si la cuenta no esta verificada.
+        // cerró sesión
 
-        if (!await Session.status(session_id) || !account_verified) {
-            // Modificar para hacer logout con la cuenta no verificada
-            
-            throw new Error();
-        }
+        if (!await Session.status(session_id)) throw new Error();
         
         return match
     } catch(err) {
@@ -40,16 +63,10 @@ async function verificatorA(token) {
     }
 }
 
-async function verificatorB(token) {
-    if (!token) throw new Error("Access token is required");
-    try {
-        const match = Token.verify(token);
-    } catch(err) {
-        throw new Error("Token is invalid");
-    }
-}
-
 module.exports = {
-    verificatorA,
-    verificatorB
+    isRoleValidAndVerifyStatusSession,
+    isRoleValid,
+    isUserNotVerified,
+    isUser,
+    isUserRecover
 }

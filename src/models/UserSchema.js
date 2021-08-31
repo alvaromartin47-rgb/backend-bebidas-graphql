@@ -12,6 +12,10 @@ const userSchema = new Schema({
     },
     account_verified: {type: Boolean},
     phone: {type: String},
+    roles: [{
+        ref: "Role",
+        type: Schema.Types.ObjectId
+    }]
 });
 
 userSchema.plugin(uniqueValidator);

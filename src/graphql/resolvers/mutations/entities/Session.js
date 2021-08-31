@@ -6,16 +6,16 @@ import Token from '../../../entities/Token';
 export default class Session {
 
     async startSession(id) {
-        const { _id } = await this.addSessionDb(id);
-        const { account_verified } = await UserSchema.findById(id);
-        
+        const { _id } = await this._addSessionDb(id);
+        const role = await this._getRole(id);
+
         const body = {
             id,
             session_id: _id,
-            account_verified,
+            role
         }
 
-        const access_token = Token.generate(body, 60*3);
+        const access_token = Token.generate(body, process.env.EXPIRATION_LOGIN);
         const { session_id, iat, exp } = Token.decode(access_token);
         
         await SessionSchema.findByIdAndUpdate(session_id, {
@@ -26,7 +26,14 @@ export default class Session {
         return {access_token};
     }
 
-    async addSessionDb(userId) {
+    async _getRole(id) {
+        const { account_verified } = await UserSchema.findById(id);
+        
+        if (account_verified) return "UserNotVerified";
+        return "User";
+    }
+
+    async _addSessionDb(userId) {
         const newSession = new SessionSchema({
             userId,
             start: null,
@@ -37,14 +44,14 @@ export default class Session {
         return await newSession.save();
     }
 
-    static async finishSession(session_id, update) {
-        await SessionSchema.findByIdAndUpdate(session_id, update, {new: true});
+    static async finishSession(sessionId, update) {
+        await SessionSchema.findByIdAndUpdate(sessionId, update, {new: true});
         
         return {message: "Session finalized"};
     }
 
-    static async status(session_id) {
-        const { status } = await SessionSchema.findById(session_id);
+    static async status(sessionId) {
+        const { status } = await SessionSchema.findById(sessionId);
         return status;
     }
 }

@@ -12,7 +12,7 @@ export default class EmailVerification {
         const id = await User.getId(this.email);
         
         const body = {
-            type: "Verification",
+            role: "UserNotVerified",
             id
         }
 

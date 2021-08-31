@@ -14,6 +14,34 @@ async function findSessions() {
     return await SessionSchema.find();
 }
 
+async function generateResponse(category) {
+    const newCategory = category;
+
+    const products = getProductsForId(newCategory.products);
+    newCategory.products = products;
+
+    if (newCategory.sub_categories.length == 0) return newCategory;
+
+    for (let i=0; i < newCategory.sub_categories.length; i++) {
+        const sub_category = newCategory.sub_categories[i];
+        
+        obj = generateResponse(sub_category);
+        
+        newCategory.sub_categories.splice(i, 1);
+        newCategory.sub_categories.splice(i, 0, obj);
+    }
+    
+    return newCategory; 
+
+}
+
+async function findCategories(filters) {
+    if (!filters) filters = {};
+    const category = await CategorySchema.find(filters);
+
+    return await generateResponse(category);
+}
+
 async function processLogout(access_token) {
     const { session_id } = Token.decode(access_token);
 
@@ -23,14 +51,8 @@ async function processLogout(access_token) {
     });
 }
 
-// Refactor
 async function processVerifyEmail(access_token) {
-    const { id, type } = Token.decode(access_token);
-    const { account_verified } = await UserSchema.findById(id);
-
-    if (type != "Verification" || account_verified) {
-        throw new Error("Token is invalid");
-    }
+    const { id } = Token.decode(access_token);
 
     await UserSchema.findByIdAndUpdate(id, {account_verified: true});
 
@@ -42,13 +64,8 @@ async function processVerifyEmail(access_token) {
     }
 }
 
-// Refactor
 async function processReSendEmailVerification(access_token) {
     const { id } = Token.decode(access_token);
-    const { account_verified } = await UserSchema.findById(id);
-
-    if (account_verified) throw new Error("Account already verified");
-
     const { email } = await UserSchema.findById(id);
 
     const sender = new Sender(new EmailVerification(email));
@@ -67,5 +84,6 @@ module.exports = {
     processLogout,
     processVerifyEmail,
     processReSendEmailVerification,
-    processProfile
+    processProfile,
+    findCategories
 }
