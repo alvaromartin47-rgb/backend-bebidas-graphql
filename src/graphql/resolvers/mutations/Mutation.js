@@ -12,7 +12,7 @@ const Mutation = {
 
     async updateProfile(root, { input }, ctx) {
         await isUser(ctx.token);
-        return {};
+        return await fcs.processUpdateProfile(ctx.token, input);
     },
 
     async updatePassword(root, { input }, ctx) {

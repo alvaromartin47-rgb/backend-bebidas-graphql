@@ -66,11 +66,20 @@ async function processAddProduct(product) {
     return _id;
 }
 
+async function processUpdateProfile(accessToken, newProfile) {
+    const { id } = Token.decode(accessToken);
+    
+    await UserSchema.updateOne({_id: id}, newProfile);
+
+    return {"message": "Todo OK"};
+}
+
 module.exports = {
     processSignUp,
     processSignIn,
     processUpdatePassword,
     processAddCategory,
     processAddProduct,
+    processUpdateProfile,
     processSendEmailUpdatePassword
 }
