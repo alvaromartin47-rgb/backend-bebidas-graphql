@@ -23,12 +23,12 @@ export default class EmailRecovery {
         const recoverToken = await this.generateToken();
 
         const link = `${process.env.URI}/recovery_password?token=${recoverToken}`;
-        const msj = `Ingresa al siguiente link para recuperar tu cuenta --> ${link}`;
+        const msj = `<a href=${link}>Click aquí para cambiar tu contraseña</a>`;
 
         const emailer = new Emailer(this.email, msj);
         await emailer.send();
         
-        return {message: "Check your inbox and click in the link that we sent"}
+        return {"message": "Check your inbox and click in the link that we sent"}
     }
 
 }

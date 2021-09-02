@@ -23,7 +23,7 @@ export default class EmailVerification {
         const registerToken = await this.generateToken();
 
         const link = `${process.env.URI}/verify_email?token=${registerToken}`;
-        const msj = `Ingresa al siguiente link para verificar tu cuenta --> ${link}`;
+        const msj = `<a href=${link}>Click aquí para verificar tu cuenta</a>`;
 
         const emailer = new Emailer(this.email, msj);
         await emailer.send();

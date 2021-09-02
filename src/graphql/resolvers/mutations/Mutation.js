@@ -33,7 +33,12 @@ const Mutation = {
 
     async addProduct(root, { input }, ctx) {
         return await fcs.processAddProduct(input);
+    },
+
+    async deleteUser(root, { input }, ctx) {
+        return await fcs.processDeleteUser(ctx.token, input.password);
     }
+    
 }
 
 export default Mutation;

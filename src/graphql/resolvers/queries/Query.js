@@ -41,6 +41,7 @@ const Query = {
         await isRoleValid(ctx.token);
         return await fcs.processProfile(ctx.token);
     }
+    
 }
 
 export default Query;

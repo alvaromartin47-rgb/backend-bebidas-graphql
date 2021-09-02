@@ -97,6 +97,7 @@ async function processProfile(access_token) {
     return await UserSchema.findById(id);
 }
 
+
 module.exports = {
     findUsers,
     findSessions,

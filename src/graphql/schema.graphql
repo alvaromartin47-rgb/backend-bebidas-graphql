@@ -16,15 +16,20 @@ type Query {
 type Mutation {
     signUp(input: formSignUp): msjToken
     signIn(input: formSignIn): Token
-    updateProfile(input: formUpdateProfile): Message
-    updatePassword(input: formUpdatePassword): Message
+    updateProfile(input: formUpdateProfile): String
+    updatePassword(input: formUpdatePassword): String
     sendEmailUpdatePassword(input: formEmail): Message
     addOrder(input: [FormOrderProduct]): ID
     addProduct(input: FormAddProduct): ID
     addCategory(input: FormAddCategory): ID
+    deleteUser(input: formDeleteUser): String
 }
 
 # Auxiliars
+
+input formDeleteUser {
+    password: String!
+}
 
 input formEmail {
     email: String!

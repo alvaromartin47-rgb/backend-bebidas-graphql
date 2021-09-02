@@ -49,7 +49,7 @@ async function processUpdatePassword(accessToken, new_pwd) {
         hash: await password.encrypt()
     });
 
-    return {"message": "Todo OK"};
+    return "Password updated";
 }
 
 async function processAddCategory(category) {
@@ -71,7 +71,21 @@ async function processUpdateProfile(accessToken, newProfile) {
     
     await UserSchema.updateOne({_id: id}, newProfile);
 
-    return {"message": "Todo OK"};
+    return "Profile updated";
+}
+
+async function processDeleteUser(accessToken, password) {
+    // Falta agregar cierre de sesion en la base de datos
+
+    const { id } = Token.decode(accessToken);
+    const pwd = new Password(password);
+
+    await pwd.compareWithPasswordOf(id);
+
+    await PasswordSchema.deleteOne({userId: id});
+    await UserSchema.deleteOne({_id: id});
+
+    return "Deleted correctly";
 }
 
 module.exports = {
@@ -81,5 +95,6 @@ module.exports = {
     processAddCategory,
     processAddProduct,
     processUpdateProfile,
-    processSendEmailUpdatePassword
+    processSendEmailUpdatePassword,
+    processDeleteUser
 }
