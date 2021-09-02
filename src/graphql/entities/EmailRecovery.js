@@ -16,7 +16,7 @@ export default class EmailRecovery {
             id,
         }
 
-        return Token.generate(body, process.env.EXPIRATION_RECOVER);
+        return Token.generate(body, 60*5);
     }
 
     async sendEmail() {

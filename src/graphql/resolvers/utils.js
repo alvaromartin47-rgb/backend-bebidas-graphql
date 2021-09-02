@@ -25,6 +25,11 @@ async function isUser(accessToken) {
 async function isUserRecover(accessToken) {
     // Debe verificar si el token es valido, y debe verificar si
     // el rol que tiene asignado el token es exclusivamente UserRecover
+
+    const match = Token.verify(accessToken);
+    const { role } = Token.decode(accessToken);
+
+    if (role != "UserRecover") throw new Error("You don't have permissions");
 }
 
 function verifyExistToken(accessToken) {

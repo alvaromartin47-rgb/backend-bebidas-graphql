@@ -18,14 +18,17 @@ type Mutation {
     signIn(input: formSignIn): Token
     updateProfile(input: formUpdateProfile): Message
     updatePassword(input: formUpdatePassword): Message
-    recover(input: formRecover): Message
-    updatePasswordForRecovery(input: formUpdatePasswordForRecovery): Message
+    sendEmailUpdatePassword(input: formEmail): Message
     addOrder(input: [FormOrderProduct]): ID
     addProduct(input: FormAddProduct): ID
     addCategory(input: FormAddCategory): ID
 }
 
 # Auxiliars
+
+input formEmail {
+    email: String!
+}
 
 input FormAddCategory {
     _id: ID
@@ -104,10 +107,6 @@ type User {
     phone: String
 }
 
-input formRecover {
-    email: String!
-}
-
 input formSignUp {
     name: String!
     lastname: String!
@@ -132,11 +131,6 @@ input formUpdateProfile {
 }
 
 input formUpdatePassword {
-    last_password: String!
-    new_password: String!
-}
-
-input formUpdatePasswordForRecovery {
     new_password: String!
 }
 

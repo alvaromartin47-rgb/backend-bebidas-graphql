@@ -1,10 +1,13 @@
 import env from 'node-env-file';
 import User from './entities/User';
+import Password from './entities/Password';
 import UserSchema from '../../../models/UserSchema';
 import ProductSchema from '../../../models/ProductSchema';
 import CategorySchema from '../../../models/CategorySchema';
 import EmailRecovery from '../../entities/EmailRecovery';
+import PasswordSchema from '../../../models/PasswordSchema';
 import Sender from '../../entities/Sender';
+import Token from '../../entities/Token';
 
 env("src/.env");
 
@@ -32,17 +35,21 @@ async function processSignUp(userSchema) {
     return await user.register(email, password);
 }
 
-async function processRecover(email) {
+async function processSendEmailUpdatePassword(email) {
     const sender = new Sender(new EmailRecovery(email));
     return await sender.sendEmail();
 }
 
-async function processUpdatePassword(token, last_pwd, new_pwd) {
-    return {message: "Not implemented"}
-}
+async function processUpdatePassword(accessToken, new_pwd) {
+    const { id } = Token.decode(accessToken);
 
-async function processUpdatePasswordForRecovery(token, new_pwd) {
-    return {message: "Not implemented"}
+    const password = new Password(new_pwd);
+    
+    await PasswordSchema.updateOne({userId: id}, {
+        hash: await password.encrypt()
+    });
+
+    return {"message": "Todo OK"};
 }
 
 async function processAddCategory(category) {
@@ -62,9 +69,8 @@ async function processAddProduct(product) {
 module.exports = {
     processSignUp,
     processSignIn,
-    processRecover,
     processUpdatePassword,
-    processUpdatePasswordForRecovery,
     processAddCategory,
-    processAddProduct
+    processAddProduct,
+    processSendEmailUpdatePassword
 }

@@ -1,5 +1,5 @@
 import fcs from './functions';
-import { verificatorA, verificatorB } from '../utils'
+import { isUser, isUserRecover } from '../utils'
 
 const Mutation = {
     async signUp(root, { input }, ctx) {
@@ -16,24 +16,15 @@ const Mutation = {
     },
 
     async updatePassword(root, { input }, ctx) {
-        await isUser(ctx.token);
+        await isUserRecover(ctx.token);
         return await fcs.processUpdatePassword(
             ctx.token,
-            input.last_password,
             input.new_password
         );
     },
 
-    async recover(root, { input }, ctx) {
-        return await fcs.processRecover(input.email);
-    },
-
-    async updatePasswordForRecovery(root, { input }, ctx) {
-        await isUserRecover(ctx.token);
-        return await fcs.processUpdatePasswordForRecovery(
-            ctx.token,
-            input.new_password
-        );
+    async sendEmailUpdatePassword(root, { input }, ctx) {
+        return await fcs.processSendEmailUpdatePassword(input.email);
     },
 
     async addCategory(root, { input }, ctx) {

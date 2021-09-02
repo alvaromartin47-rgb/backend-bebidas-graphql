@@ -15,7 +15,7 @@ export default class Session {
             role
         }
 
-        const access_token = Token.generate(body, process.env.EXPIRATION_LOGIN);
+        const access_token = Token.generate(body, 60*5);
         const { session_id, iat, exp } = Token.decode(access_token);
         
         await SessionSchema.findByIdAndUpdate(session_id, {
