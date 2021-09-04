@@ -1,4 +1,4 @@
-from Petition import Petition
+from entities.Petition import Petition
 from string import Template
 
 class Product:
