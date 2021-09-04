@@ -6,6 +6,7 @@ import EmailVerification from '../../entities/EmailVerification'
 import Session from '../mutations/entities/Session';
 import Token from '../../entities/Token';
 import Sender from '../../entities/Sender';
+import moment from 'moment';
 
 async function findUsers(filters) {
     if (!filters) filters = {};
@@ -66,7 +67,7 @@ async function processLogout(access_token) {
 
     return await Session.finishSession(session_id, {
         status: false,
-        end: Date.now()
+        end: moment().unix()
     });
 }
 

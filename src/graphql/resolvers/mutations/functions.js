@@ -1,6 +1,7 @@
 import env from 'node-env-file';
 import User from './entities/User';
 import Password from './entities/Password';
+import fcsQ from '../queries/functions';
 import UserSchema from '../../../models/UserSchema';
 import ProductSchema from '../../../models/ProductSchema';
 import CategorySchema from '../../../models/CategorySchema';
@@ -75,15 +76,15 @@ async function processUpdateProfile(accessToken, newProfile) {
 }
 
 async function processDeleteUser(accessToken, password) {
-    // Falta agregar cierre de sesion en la base de datos
-
     const { id } = Token.decode(accessToken);
+    
     const pwd = new Password(password);
-
     await pwd.compareWithPasswordOf(id);
 
     await PasswordSchema.deleteOne({userId: id});
     await UserSchema.deleteOne({_id: id});
+
+    await fcsQ.processLogout(accessToken);
 
     return "Deleted correctly";
 }

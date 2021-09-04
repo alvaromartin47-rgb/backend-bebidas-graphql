@@ -1,4 +1,4 @@
-from Petition import Petition
+from entities.Petition import Petition
 import requests
 from string import Template
 
@@ -33,13 +33,17 @@ class Register:
         access_token = response.json()['data']['signUp']['access_token']
         return access_token
 
-    def deleteUser(accessToken):
-        query = '''
-        {
-            deleteUser
+    def deleteUser(self, accessToken, password):
+        template = Template('''
+        mutation {
+            deleteUser(input: {
+                password: "$pwd"
+            })
         }
-        '''
+        ''')
+
+        mutation = template.substitute(pwd=password)
 
         petition = Petition(accessToken)
         
-        return petition.sendQuery(query)
+        return petition.sendQuery(mutation)

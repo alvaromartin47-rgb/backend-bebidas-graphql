@@ -6,6 +6,9 @@ env("src/.env");
 
 // const match = Token.verify(token);
 
+// Todos los verificadores deben controlar que si el token es valido, la session tambien
+// esté activa.
+
 async function isRoleValid(accessToken) {
     // Debe verificar si el token es valido, y debe verificar si
     // el rol que tiene asignado el token pertenece a la base de datos

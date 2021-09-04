@@ -1,5 +1,5 @@
 from string import Template
-from Petition import Petition
+from entities.Petition import Petition
 
 class Order:
 
