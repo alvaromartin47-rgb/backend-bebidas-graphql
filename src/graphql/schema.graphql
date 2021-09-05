@@ -109,6 +109,7 @@ type User {
     lastname: String
     email: String
     account_verified: Boolean
+    role: String
     phone: String
 }
 

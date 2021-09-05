@@ -1,9 +1,9 @@
 import Password from './Password';
 import Registrator from './Registrator';
 import Session from './Session';
-import UserSchema from '../../../../models/UserSchema';
-import EmailVerification from '../../../entities/EmailVerification';
-import Sender from '../../../entities/Sender';
+import UserSchema from '../../models/UserSchema';
+import EmailVerification from './EmailVerification';
+import Sender from './Sender';
 
 export default class User {
 
@@ -17,6 +17,7 @@ export default class User {
             lastname: this.data.lastname,
             phone: this.data.phone,
             account_verified: false,
+            role: "UserNotVerified",
             email,
             password
         }

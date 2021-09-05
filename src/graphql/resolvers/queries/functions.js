@@ -3,7 +3,7 @@ import SessionSchema from '../../../models/SessionSchema';
 import CategorySchema from '../../../models/CategorySchema';
 import ProductSchema from '../../../models/ProductSchema';
 import EmailVerification from '../../entities/EmailVerification'
-import Session from '../mutations/entities/Session';
+import Session from '../../entities/Session';
 import Token from '../../entities/Token';
 import Sender from '../../entities/Sender';
 import moment from 'moment';
@@ -74,7 +74,10 @@ async function processLogout(access_token) {
 async function processVerifyEmail(access_token) {
     const { id } = Token.decode(access_token);
 
-    await UserSchema.findByIdAndUpdate(id, {account_verified: true});
+    await UserSchema.findByIdAndUpdate(id, {
+        account_verified: true,
+        role: "User"
+    });
 
     const session = new Session();
     

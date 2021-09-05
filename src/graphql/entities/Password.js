@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import PasswordSchema from '../../../../models/PasswordSchema';
+import PasswordSchema from '../../models/PasswordSchema';
 
 export default class Password {
 

@@ -1,5 +1,5 @@
 import env from 'node-env-file';
-import Session from './mutations/entities/Session';
+import Session from '../entities/Session';
 import Token from '../entities/Token';
 
 env("src/.env");

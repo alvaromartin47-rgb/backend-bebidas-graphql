@@ -1,6 +1,6 @@
 import Emailer from './Emailer';
 import Token from './Token';
-import User from '../resolvers/mutations/entities/User';
+import User from './User';
 
 export default class EmailVerification {
 

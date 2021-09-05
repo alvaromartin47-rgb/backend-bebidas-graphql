@@ -1,5 +1,5 @@
-import UserSchema from '../../../../models/UserSchema';
-import PasswordSchema from '../../../../models/PasswordSchema';
+import UserSchema from '../../models/UserSchema';
+import PasswordSchema from '../../models/PasswordSchema';
 import Password from './Password';  
 
 export default class Registrator {

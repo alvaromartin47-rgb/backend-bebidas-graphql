@@ -12,10 +12,10 @@ const userSchema = new Schema({
     },
     account_verified: {type: Boolean},
     phone: {type: String},
-    roles: [{
+    role: {
         ref: "RoleSchema",
-        type: Schema.Types.ObjectId
-    }],
+        type: String
+    },
     price: {type: String}
 });
 

@@ -1,6 +1,6 @@
-import SessionSchema from '../.../../../../../models/SessionSchema';
-import UserSchema from '../.../../../../../models/UserSchema';
-import Token from '../../../entities/Token';
+import SessionSchema from '../../models/SessionSchema';
+import UserSchema from '../../models/UserSchema';
+import Token from './Token';
 
 
 export default class Session {
@@ -27,10 +27,8 @@ export default class Session {
     }
 
     async _getRole(id) {
-        const { account_verified } = await UserSchema.findById(id);
-        
-        if (account_verified) return "UserNotVerified";
-        return "User";
+        const { role } = await UserSchema.findById(id);
+        return role;
     }
 
     async _addSessionDb(userId) {
