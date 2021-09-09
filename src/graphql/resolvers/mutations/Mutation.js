@@ -1,8 +1,19 @@
 import fcs from './functions';
-import { isUser, isUserRecover } from '../utils'
+import { isUser, isUserRecover, isSuperAdmin } from '../utils'
 
 const Mutation = {
     async signUp(root, { input }, ctx) {
+        input.role = "UserNotVerified";
+        input.account_verified = false;
+
+        return await fcs.processSignUp(input);
+    },
+
+    async signUpAdmin(root, { input }, ctx) {
+        await isSuperAdmin(ctx.token);
+        input.role = "Admin";
+        input.account_verified = "true";
+
         return await fcs.processSignUp(input);
     },
 
@@ -17,6 +28,7 @@ const Mutation = {
 
     async updatePassword(root, { input }, ctx) {
         await isUserRecover(ctx.token);
+        
         return await fcs.processUpdatePassword(
             ctx.token,
             input.new_password
@@ -37,6 +49,14 @@ const Mutation = {
 
     async deleteUser(root, { input }, ctx) {
         return await fcs.processDeleteUser(ctx.token, input.password);
+    },
+
+    async deleteProduct(root, { input }, ctx) {
+        return await fcs.processDeleteProduct(input);
+    },
+
+    async updateProduct(root, { input }, ctx) {
+        return await fcs.processUpdateProduct(input);
     }
     
 }

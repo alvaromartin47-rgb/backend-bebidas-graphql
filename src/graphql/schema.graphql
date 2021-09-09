@@ -10,28 +10,41 @@ type Query {
     profile: User
     logout: Message
     orders: [Order]
+    products(filters: FormAddProduct): [Product]
     categories(filters: CategoriesInput): [Category]
 }
 
 type Mutation {
     signUp(input: formSignUp): msjToken
+    signUpAdmin(input: formSignUp): msjToken
     signIn(input: formSignIn): Token
     updateProfile(input: formUpdateProfile): String
     updatePassword(input: formUpdatePassword): String
-    sendEmailUpdatePassword(input: formEmail): Message
+    sendEmailUpdatePassword(input: FormEmail): Message
     addOrder(input: [FormOrderProduct]): ID
-    addProduct(input: FormAddProduct): ID
     addCategory(input: FormAddCategory): ID
-    deleteUser(input: formDeleteUser): String
+    deleteUser(input: FormDeleteUser): String
+    addProduct(input: FormAddProduct): ID
+    deleteProduct(input: FormDeleteProduct): String
+    updateProduct(input: FormUpdateProduct): String
 }
 
 # Auxiliars
 
-input formDeleteUser {
+input FormUpdateProduct {
+    product_id: ID!
+    data: FormAddProduct!
+}
+
+input FormDeleteProduct {
+    product_id: ID!
+}
+
+input FormDeleteUser {
     password: String!
 }
 
-input formEmail {
+input FormEmail {
     email: String!
 }
 

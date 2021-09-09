@@ -13,6 +13,11 @@ async function findUsers(filters) {
     return await UserSchema.find(filters);
 }
 
+async function findProducts(filters) {
+    if (!filters) filters = {};
+    return await ProductSchema.find(filters);
+}
+
 async function findSessions() {
     return await SessionSchema.find();
 }
@@ -109,5 +114,6 @@ module.exports = {
     processVerifyEmail,
     processReSendEmailVerification,
     processProfile,
-    findCategories
+    findCategories,
+    findProducts
 }

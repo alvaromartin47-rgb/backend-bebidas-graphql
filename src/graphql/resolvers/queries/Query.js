@@ -14,6 +14,10 @@ const Query = {
         return await fcs.findUsers(filters);
     },
 
+    async products(root, { filters }, ctx) {
+        return await fcs.findProducts(filters);
+    },
+
     async sessions(root, { input }, ctx) {
         return await fcs.findSessions();
     },

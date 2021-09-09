@@ -89,6 +89,20 @@ async function processDeleteUser(accessToken, password) {
     return "Deleted correctly";
 }
 
+async function processDeleteProduct(input) {
+    await ProductSchema.deleteOne({_id: input.product_id});
+    
+    return "Deleted correctly";
+}
+
+async function processUpdateProduct(input) {
+    await ProductSchema.updateOne({
+        _id: input.product_id
+    }, input.data);
+
+    return "Product updated";
+}
+
 module.exports = {
     processSignUp,
     processSignIn,
@@ -97,5 +111,7 @@ module.exports = {
     processAddProduct,
     processUpdateProfile,
     processSendEmailUpdatePassword,
-    processDeleteUser
+    processDeleteUser,
+    processDeleteProduct,
+    processUpdateProduct
 }

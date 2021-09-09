@@ -9,6 +9,10 @@ env("src/.env");
 // Todos los verificadores deben controlar que si el token es valido, la session tambien
 // esté activa.
 
+async function isSuperAdmin(accessToken) {
+ 
+}
+
 async function isRoleValid(accessToken) {
     // Debe verificar si el token es valido, y debe verificar si
     // el rol que tiene asignado el token pertenece a la base de datos
@@ -76,5 +80,6 @@ module.exports = {
     isRoleValid,
     isUserNotVerified,
     isUser,
-    isUserRecover
+    isUserRecover,
+    isSuperAdmin
 }

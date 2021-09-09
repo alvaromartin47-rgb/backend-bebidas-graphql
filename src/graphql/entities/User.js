@@ -16,8 +16,8 @@ export default class User {
             name: this.data.name,
             lastname: this.data.lastname,
             phone: this.data.phone,
-            account_verified: false,
-            role: "UserNotVerified",
+            account_verified: this.data.account_verified,
+            role: this.data.role,
             email,
             password
         }
