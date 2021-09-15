@@ -17,6 +17,13 @@ const Mutation = {
         return await fcs.processSignUp(input);
     },
 
+    async signUpSuperAdmin(root, { input }, ctx) {
+        input.role = "SuperAdmin";
+        input.account_verified = "true";
+
+        return await fcs.processSignUp(input);
+    },
+
     async signIn(root, { input }, ctx) {
         return await fcs.processSignIn(input.email, input.password);
     },
@@ -57,6 +64,10 @@ const Mutation = {
 
     async updateProduct(root, { input }, ctx) {
         return await fcs.processUpdateProduct(input);
+    },
+
+    async addProductOrder(root, { input }, ctx) {
+        return await fcs.processAddProductOrder(input, ctx.token);
     }
     
 }

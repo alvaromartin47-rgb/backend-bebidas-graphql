@@ -29,8 +29,8 @@ class Orders(unittest.TestCase):
     #     registrator = Register()
     #     accessToken = registrator.register(self.data)
         
-    #     order = Order()
-    #     orders = order.getOrders(accessToken)
+    #     order = Order(accessToken)
+    #     orders = order.getOrders()
 
     #     self.assertTrue(len(orders) == 0)
 

@@ -44,6 +44,10 @@ const Query = {
     async profile(root, { input }, ctx) {
         await isRoleValid(ctx.token);
         return await fcs.processProfile(ctx.token);
+    },
+
+    async orders(root, { filters }, ctx) {
+        return await fcs.processFindOrders(filters);
     }
     
 }

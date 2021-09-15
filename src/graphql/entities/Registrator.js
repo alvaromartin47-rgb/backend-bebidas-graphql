@@ -1,6 +1,7 @@
 import UserSchema from '../../models/UserSchema';
 import PasswordSchema from '../../models/PasswordSchema';
-import Password from './Password';  
+import Password from './Password';
+import Order from './Order';
 
 export default class Registrator {
 
@@ -35,9 +36,14 @@ export default class Registrator {
         return await newPasswordSchema.save();
     }
 
+    async _addOrderDb(userId) {
+        await Order.create(userId);
+    }
+
     async register() {    
         const { _id } =  await this.addUserDb();
         await this.addPasswordDb(_id);
+        await this._addOrderDb(_id);
     }
 
 }

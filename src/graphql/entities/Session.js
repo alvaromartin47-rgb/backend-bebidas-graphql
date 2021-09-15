@@ -52,4 +52,5 @@ export default class Session {
         const { status } = await SessionSchema.findById(sessionId);
         return status;
     }
+    
 }

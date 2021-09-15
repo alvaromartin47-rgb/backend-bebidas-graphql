@@ -1,6 +1,7 @@
 import UserSchema from '../../../models/UserSchema';
 import SessionSchema from '../../../models/SessionSchema';
 import CategorySchema from '../../../models/CategorySchema';
+import OrderSchema from '../../../models/OrderSchema';
 import ProductSchema from '../../../models/ProductSchema';
 import EmailVerification from '../../entities/EmailVerification'
 import Session from '../../entities/Session';
@@ -106,6 +107,11 @@ async function processProfile(access_token) {
     return await UserSchema.findById(id);
 }
 
+async function processFindOrders(filters) {
+    if (!filters) filters = {};
+    return await OrderSchema.find(filters);
+}
+
 
 module.exports = {
     findUsers,
@@ -115,5 +121,6 @@ module.exports = {
     processReSendEmailVerification,
     processProfile,
     findCategories,
-    findProducts
+    findProducts,
+    processFindOrders
 }

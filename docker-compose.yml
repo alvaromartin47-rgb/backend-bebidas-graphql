@@ -34,29 +34,29 @@ services:
             - ./:/app/api
         command: /bin/sh /app/api/scripts/execute-graphql.sh
         
-    # local_tunnel_socket:
-    #     container_name: local_tunel_socket
-    #     build:
-    #         context: ./dockerfiles
-    #         dockerfile: localtunnel.dockerfile
-    #     image: sv-localtunnel
-    #     links:
-    #         - socket
-    #     depends_on: 
-    #         - socket
-    #     command: "lt -p 6000 -l socket -s socket"
+    local_tunnel_socket:
+        container_name: local_tunel_socket
+        build:
+            context: ./dockerfiles
+            dockerfile: localtunnel.dockerfile
+        image: sv-localtunnel
+        links:
+            - socket
+        depends_on: 
+            - socket
+        command: "lt -p 6000 -l socket -s socket"
 
-    # local_tunnel_graphql:
-    #     container_name: local_tunel_graphql
-    #     build:
-    #         context: ./dockerfiles
-    #         dockerfile: localtunnel.dockerfile
-    #     image: sv-localtunnel
-    #     links:
-    #         - graphql
-    #     depends_on: 
-    #         - graphql
-    #     command: "lt -p 4000 -l graphql -s graphql"
+    local_tunnel_graphql:
+        container_name: local_tunel_graphql
+        build:
+            context: ./dockerfiles
+            dockerfile: localtunnel.dockerfile
+        image: sv-localtunnel
+        links:
+            - graphql
+        depends_on: 
+            - graphql
+        command: "lt -p 4000 -l graphql -s graphql"
 
     db:
         container_name: database

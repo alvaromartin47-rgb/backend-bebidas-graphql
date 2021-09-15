@@ -39,6 +39,7 @@ input OrderInput {
 
 input FormFinalizeOrder {
     payment: String
+    address: FormAddresOrder
 }
 
 input FormUpdateProduct {
@@ -70,6 +71,7 @@ input FormAddProduct {
     description: String
     stock: Int
     visible: Boolean
+    price: Float
     photo: String
     max_order: Int
     discount: Int
@@ -97,7 +99,7 @@ input FormOrderProduct {
     quantity: Int!
 }
 
-type Import {
+type Cost {
     import: Float
     discount: Float
     delivery: Float
@@ -107,7 +109,22 @@ type Import {
 type OrderProduct {
     product: Product
     quantity: Int
-    total: Float
+}
+
+input FormAddresOrder {
+    city: String!
+    street: String!
+    zip_code: String!
+    number: String!
+    indications: String
+}
+
+type AddresOrder {
+    city: String
+    street: String
+    zip_code: String
+    number: String
+    indications: String
 }
 
 type Order {
@@ -115,8 +132,9 @@ type Order {
     user_id: ID
     number: Int
     created_at: String
+    address: AddresOrder
     products: [OrderProduct]
-    import: Import
+    cost: Cost
     payment: String
     status: String
 }

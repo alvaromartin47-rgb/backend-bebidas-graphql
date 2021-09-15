@@ -10,7 +10,12 @@ env("src/.env");
 // esté activa.
 
 async function isSuperAdmin(accessToken) {
- 
+    verifyExistToken(accessToken);
+
+    const match = Token.verify(accessToken);
+    const { role } = Token.decode(accessToken);
+
+    if (role != "SuperAdmin") throw new Error("You don't have permissions");
 }
 
 async function isRoleValid(accessToken) {
@@ -40,7 +45,7 @@ async function isUserRecover(accessToken) {
 }
 
 function verifyExistToken(accessToken) {
-    if (!token) throw new Error("Access token is required");
+    if (!accessToken) throw new Error("Access token is required");
 }
 
 async function isRoleValidAndVerifyStatusSession(accessToken) {
