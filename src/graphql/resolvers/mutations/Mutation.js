@@ -68,6 +68,10 @@ const Mutation = {
 
     async addProductOrder(root, { input }, ctx) {
         return await fcs.processAddProductOrder(input, ctx.token);
+    },
+
+    async finalizeOrder(root, { input }, ctx) {
+        return await fcs.processFinalizeOrder(input, ctx.token);
     }
     
 }

@@ -1,6 +1,7 @@
 import env from 'node-env-file';
 import Session from '../entities/Session';
 import Token from '../entities/Token';
+import ProductSchema from '../../models/ProductSchema';
 
 env("src/.env");
 
@@ -80,11 +81,27 @@ async function isRoleValidAndVerifyStatusSession(accessToken) {
     }
 }
 
+async function getProductsById(orders) {
+    for (let n=0; n < orders.length; n++) {
+        for (let i=0; i < orders[n].products.length; i++) {
+            const product_id = orders[n].products[i].product_id;
+
+            const product = await ProductSchema.findById(product_id);
+        
+            orders[n].products[i].product = product;
+            delete orders[n].products[i].product_id;
+        }    
+    }
+
+    return orders;
+}
+
 module.exports = {
     isRoleValidAndVerifyStatusSession,
     isRoleValid,
     isUserNotVerified,
     isUser,
     isUserRecover,
-    isSuperAdmin
+    isSuperAdmin,
+    getProductsById
 }

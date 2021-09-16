@@ -12,6 +12,8 @@ import Sender from '../../entities/Sender';
 import Token from '../../entities/Token';
 import Order from '../../entities/Order';
 import Product from '../../entities/Product';
+import utils from '../utils';
+import moment from 'moment';
 
 env("src/.env");
 
@@ -147,13 +149,36 @@ async function processAddProductOrder(input, accessToken) {
         cost
     });
     
-    const updated = await OrderSchema.find(searchField);
+    const orders = await OrderSchema.find(searchField);
+    const orders_updated = await utils.getProductsById(orders);
     
-    return updated[0];
+    return orders_updated[0];
 }
 
-async function finalizeOrder(input, accessToken) {
-    // await Order.create(id);
+async function processFinalizeOrder(input, accessToken) {
+    const { id } = Token.decode(accessToken);
+
+    const searchField = {
+        user_id: id,
+        status: "Pendient"
+    }
+
+    const orders = await OrderSchema.find(searchField);
+    
+    if (orders[0].products.length == 0) {
+        throw new Error("You must add at least one product");
+    }
+    
+    await Order.create(id);
+
+    await OrderSchema.updateOne(searchField, {
+        status: "In preparation",
+        created_at: moment().unix(),
+        address: input.address,
+        payment: input.payment
+    });
+
+    return "Order in preparation";
 }
 
 module.exports = {
@@ -168,5 +193,5 @@ module.exports = {
     processDeleteProduct,
     processUpdateProduct,
     processAddProductOrder,
-    finalizeOrder
+    processFinalizeOrder
 }

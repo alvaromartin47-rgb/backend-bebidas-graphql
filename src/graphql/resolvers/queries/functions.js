@@ -8,6 +8,7 @@ import Session from '../../entities/Session';
 import Token from '../../entities/Token';
 import Sender from '../../entities/Sender';
 import moment from 'moment';
+import utils from '../utils';
 
 async function findUsers(filters) {
     if (!filters) filters = {};
@@ -109,7 +110,13 @@ async function processProfile(access_token) {
 
 async function processFindOrders(filters) {
     if (!filters) filters = {};
-    return await OrderSchema.find(filters);
+    
+    const orders = await OrderSchema.find(filters);
+
+    const orders_updated = await utils.getProductsById(orders);
+
+    return orders_updated;
+
 }
 
 

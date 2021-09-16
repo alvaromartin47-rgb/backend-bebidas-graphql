@@ -1,13 +1,14 @@
-import ImportSchema from '../../models/ImportSchema';
 import OrderSchema from '../../models/OrderSchema';
 
 export default class Order {
 
     static async create(userId) {
-        let { number } = await OrderSchema.find({
+        let orders = await OrderSchema.find({
             user_id: userId,
             status: "Pendient"
         });
+
+        let number = orders[0].number;
 
         if (!number) number = 1;
         else number = number + 1;
@@ -15,12 +16,12 @@ export default class Order {
         const newOrderSchema = new OrderSchema({
             user_id: userId,
             number,
-            cost: new ImportSchema({
+            cost: {
                 import: 0.0,
                 discount: 0.0,
                 delivery: 50.0,
                 total: 50.0
-            }),
+            },
             products: [],
             status: "Pendient"
         });
