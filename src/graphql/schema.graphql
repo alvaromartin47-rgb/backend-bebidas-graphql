@@ -29,9 +29,14 @@ type Mutation {
     addProduct(input: FormAddProduct): ID
     deleteProduct(input: FormDeleteProduct): String
     updateProduct(input: FormUpdateProduct): String
+    deleteOrder(input: FormDeleteOrder): String
 }
 
 # Auxiliars
+
+input FormDeleteOrder {
+    order_id: ID!
+}
 
 input OrderInput {
     status: String

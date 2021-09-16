@@ -181,6 +181,19 @@ async function processFinalizeOrder(input, accessToken) {
     return "Order in preparation";
 }
 
+async function processDeleteOrder(orderId) {
+    const order = await OrderSchema.findById(orderId);
+
+    if (!order) throw new Error("Order not exist");
+    if (order.status != "In preparation") {
+        throw new Error("Only delete order when is in preparation");
+    }
+
+    await OrderSchema.deleteOne({_id: orderId});
+
+    return "Order deleted correctly";
+}
+
 module.exports = {
     processSignUp,
     processSignIn,
@@ -193,5 +206,6 @@ module.exports = {
     processDeleteProduct,
     processUpdateProduct,
     processAddProductOrder,
-    processFinalizeOrder
+    processFinalizeOrder,
+    processDeleteOrder
 }
