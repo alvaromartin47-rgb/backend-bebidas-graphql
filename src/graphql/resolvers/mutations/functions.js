@@ -123,6 +123,7 @@ async function processAddProductOrder(input, accessToken) {
 
     if (input.quantity > stock) throw new Error("Insuficient stock");
     
+    input.total = input.quantity * price;
     const cost = data[0].cost;
     const products = data[0].products;
 

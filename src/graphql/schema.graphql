@@ -94,11 +94,6 @@ input CategoriesInput {
     name: String
 }
 
-input FormAddOrder {
-    products: [FormOrderProduct]
-    payment: String
-}
-
 input FormOrderProduct {
     product_id: ID!
     quantity: Int!
@@ -114,6 +109,7 @@ type Cost {
 type OrderProduct {
     product: Product
     quantity: Int
+    total: Float
 }
 
 input FormAddresOrder {

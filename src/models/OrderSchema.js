@@ -21,7 +21,8 @@ const addressSchema = new Schema({
 
 const orderProductSchema = new Schema({
     product_id: {type: String},
-    quantity: {type: Number}
+    quantity: {type: Number},
+    total: {type: Number}
 })
 
 const orderSchema = new Schema({
