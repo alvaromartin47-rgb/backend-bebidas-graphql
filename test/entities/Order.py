@@ -46,3 +46,18 @@ class Order:
         petition = Petition(self.access_token)
 
         return petition.sendQuery(order)
+
+    def getOrderWithStatusPendient(self):
+        query = '''
+        {
+            orders(filters: {
+                status: "Pendient"
+            }) {
+                _id
+            }
+        }
+        '''
+
+        petition = Petition(self.access_token)
+        
+        return petition.sendQuery(query)

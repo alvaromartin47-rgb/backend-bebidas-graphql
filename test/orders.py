@@ -23,20 +23,20 @@ class Orders(unittest.TestCase):
     
         registrator.deleteUser(accessToken, self.data['password'])
 
-    # def test02InitiallyUserHasNotOrders(self):
-    #     # Register
+    def test02InitiallyUserHasOrderInStatusPendient(self):
+        # Register
 
-    #     registrator = Register()
-    #     accessToken = registrator.register(self.data)
+        registrator = Register()
+        accessToken = registrator.register(self.data)
         
-    #     order = Order(accessToken)
-    #     orders = order.getOrders()
+        order = Order(accessToken)
+        orders = order.getOrderWithStatusPendient()
 
-    #     self.assertTrue(len(orders) == 0)
+        self.assertTrue(len(orders["data"]["orders"]) == 1)
 
-    #     # Delete user
+        # Delete user
 
-    #     registrator.deleteUser(accessToken, self.data['password'])
+        registrator.deleteUser(accessToken, self.data['password'])
 
     # def test03CreateOrderIsOk(self):
     #     # Register
