@@ -8,10 +8,9 @@ export default class Order {
             status: "Pendient"
         });
 
-        let number = orders[0].number;
-
-        if (!number) number = 1;
-        else number = number + 1;
+        let number;
+        if (orders.length == 0) number = 1;
+        else number = orders[0].number + 1;
 
         const newOrderSchema = new OrderSchema({
             user_id: userId,

@@ -33,7 +33,7 @@ export default class Session {
 
     async _addSessionDb(userId) {
         const newSession = new SessionSchema({
-            userId,
+            user_id: userId,
             start: null,
             end: null,
             status: true,

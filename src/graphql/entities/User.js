@@ -4,6 +4,7 @@ import Session from './Session';
 import UserSchema from '../../models/UserSchema';
 import EmailVerification from './EmailVerification';
 import Sender from './Sender';
+import OrderSchema from '../../models/OrderSchema';
 
 export default class User {
 
@@ -50,6 +51,14 @@ export default class User {
 
         const session = new Session();
         return await session.startSession(id);
+    }
+
+    static async deleteAllOrders() {
+        const orders = await OrderSchema.find({});
+
+        for (let i=0; i < orders.length; i++) {
+            await OrderSchema.deleteOne({_id: orders[i]._id});
+        }
     }
 
 }

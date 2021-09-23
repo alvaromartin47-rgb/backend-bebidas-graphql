@@ -87,6 +87,7 @@ async function processDeleteUser(accessToken, password) {
     await pwd.compareWithPasswordOf(id);
 
     await PasswordSchema.deleteOne({ userId: id });
+    await User.deleteAllOrders();
     await UserSchema.deleteOne({ _id: id });
 
     await fcsQ.processLogout(accessToken);

@@ -60,8 +60,7 @@ async function isRoleValidAndVerifyStatusSession(accessToken) {
         // cerró sesión
 
         if (!await Session.status(session_id)) throw new Error();
-        
-        return match
+    
     } catch(err) {
         if (err.name == "TokenExpiredError") {
             // El objetivo del condicional es que solo se utilice cuando

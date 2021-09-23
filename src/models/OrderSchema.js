@@ -1,12 +1,11 @@
 import mongoose from 'mongoose';
 import uniqueValidator from 'mongoose-unique-validator';
-var Float = require('mongoose-float').loadType(mongoose);
 
 const { Schema } = mongoose;
 
 const costSchema = new Schema({
-    import: {type: Float},
-    discount: {type: Float},
+    import: {type: Number},
+    discount: {type: Number},
     delivery: {type: Number},
     total: {type: Number}
 });
@@ -27,7 +26,7 @@ const orderProductSchema = new Schema({
 
 const orderSchema = new Schema({
     user_id: {type: String},
-    number: {type: Number, unique: true},
+    number: {type: Number},
     created_at: {type: String, required: false},
     products: [orderProductSchema],
     address: addressSchema,
