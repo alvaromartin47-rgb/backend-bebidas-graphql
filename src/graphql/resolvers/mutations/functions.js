@@ -11,8 +11,6 @@ import OrderSchema from '../../../models/OrderSchema';
 import Sender from '../../entities/Sender';
 import Token from '../../entities/Token';
 import Order from '../../entities/Order';
-import Product from '../../entities/Product';
-import utils from '../utils';
 import moment from 'moment';
 
 env("src/.env");
@@ -114,47 +112,7 @@ async function processUpdateProduct(input) {
 async function processAddProductOrder(input, accessToken) {
     const { id } = Token.decode(accessToken);
 
-    const searchField = {
-        user_id: id,
-        status: "Pendient"
-    }
-
-    const { price, stock } = await Product.findById(input.product_id);
-    const data = await OrderSchema.find(searchField);
-
-    if (input.quantity > stock) throw new Error("Insuficient stock");
-    
-    input.total = input.quantity * price;
-    const cost = data[0].cost;
-    const products = data[0].products;
-
-    cost.import = cost.import + (price * input.quantity);
-    cost.total = cost.import - cost.discount + cost.delivery;
-    
-    let ok = false; 
-    for (let i=0; i < products.length; i++) {
-        if (products[i].product_id != input.product_id) continue;
-
-        products[i].quantity = products[i].quantity + input.quantity;
-        ok = true;
-        break;
-    }
-
-    if (!ok) products.push(input);
-    
-    await ProductSchema.updateOne({ _id: input.product_id }, {
-        stock: stock - input.quantity
-    });
-
-    await OrderSchema.updateOne(searchField, {
-        products,
-        cost
-    });
-    
-    const orders = await OrderSchema.find(searchField);
-    const orders_updated = await utils.getProductsById(orders);
-    
-    return orders_updated[0];
+    return await Order.addProduct(id, input);
 }
 
 async function processFinalizeOrder(input, accessToken) {
