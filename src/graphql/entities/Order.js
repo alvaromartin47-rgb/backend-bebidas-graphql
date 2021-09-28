@@ -3,6 +3,7 @@ import Product from '../entities/Product';
 import Payment from '../entities/Payment';
 import ProductSchema from '../../models/ProductSchema';
 import utils from '../../graphql/resolvers/utils';
+import moment from 'moment';
 
 export default class Order {
 
@@ -29,7 +30,7 @@ export default class Order {
             status: "Pendient",
             status_payment: null
         });
-        
+
         await newOrderSchema.save();
     }
 
@@ -77,10 +78,10 @@ export default class Order {
             user_id: userId,
             status: "Pendient"
         }
-
-        const order = await OrderSchema.find(searchField);
-
-        return order[0];
+    
+        const orders = await OrderSchema.find(searchField);
+        
+        return orders[0];
     }
 
     static async addProduct(userId, orderProduct) {
@@ -88,7 +89,7 @@ export default class Order {
         const product = await Product.findById(orderProduct.product_id);
         const stock = product.stock;
         
-        const stock = await Order._getOrderUpdatedByCost(
+        await Order._updateOrderByCost(
             order,
             product,
             orderProduct
@@ -100,32 +101,27 @@ export default class Order {
             stock: stock - orderProduct.quantity
         });
     
-        await OrderSchema.updateOne(searchField, {
+        await Order.update(userId, {
             products: order.products,
             cost: order.cost
         });
         
-        const orders = await OrderSchema.find(searchField);
-        const orders_updated = await utils.getProductsById(orders);
+        const orders = await Order.getOrderPendient(userId);
+        const orders_updated = await utils.getProductsById([orders]);
         
         return orders_updated[0];
     }
 
-    static async finalize(userId) {
-        const searchField = {
-            user_id: userId,
-            status: "Pendient"
-        }
-    
-        const orders = await OrderSchema.find(searchField);
+    static async finalize(userId, input) {
+        const order = await Order.getOrderPendient(userId);
         
-        if (orders[0].products.length == 0) {
+        if (order.products.length == 0) {
             throw new Error("You must add at least one product");
         }
         
-        await Order.create(id);
+        await Order.create(userId);
     
-        await OrderSchema.updateOne(searchField, {
+        await Order.update(userId, {
             status: "In preparation",
             created_at: moment().unix(),
             address: input.address,
@@ -146,9 +142,9 @@ export default class Order {
 
     static async collect(userId) {
         const order = await Order.getOrderPendient(userId);
-
+    
         if (!order.status_payment) {
-            await Order.update({status_payment: "pending"});
+            await Order.update(userId, {status_payment: "pending"});
 
             const payment = new Payment(
                 process.env.PUBLIC_KEY_MP,

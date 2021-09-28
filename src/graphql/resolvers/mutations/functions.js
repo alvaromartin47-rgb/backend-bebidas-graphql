@@ -115,16 +115,18 @@ async function processAddProductOrder(input, accessToken) {
 
 async function processFinalizeOrder(input, accessToken) {
     const { id } = Token.decode(accessToken);
-    
+
     if (input.payment == "mercado-pago") {
         const preferenceId = await Order.collect(id);
-        const orderFinalized = await Order.finalize(id);
+        const orderFinalized = await Order.finalize(id, input);
+        
+        orderFinalized.message = "Payment must be processed";
         orderFinalized.preference_id = preferenceId;
 
         return orderFinalized;
     }
 
-    return await Order.finalize(id);
+    return await Order.finalize(id, input);
 }
 
 async function processDeleteOrder(orderId) {
@@ -140,9 +142,9 @@ async function processDeleteOrder(orderId) {
     return "Order deleted correctly";
 }
 
-async function processValidatePayment(accessToken, resultTransaction) {
+async function processValidatePayment(resultTransaction, accessToken) {
     const { id } = Token.decode(accessToken);
-    const order = await OrderSchema.findById(id);
+    const order = await Order.getOrderPendient(id);
 
     if (!order.status_payment || order.status_payment == "success") {
         throw new Error("Validate payment requires status payment pending");

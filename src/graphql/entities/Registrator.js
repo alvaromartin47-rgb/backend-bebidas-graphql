@@ -32,7 +32,7 @@ export default class Registrator {
             userId,
             hash: await password.encrypt()
         });
-        
+    
         return await newPasswordSchema.save();
     }
 
@@ -41,7 +41,7 @@ export default class Registrator {
     }
 
     async register() {    
-        const { _id } =  await this.addUserDb();
+        const { _id } = await this.addUserDb();
         await this.addPasswordDb(_id);
         await this._addOrderDb(_id);
     }

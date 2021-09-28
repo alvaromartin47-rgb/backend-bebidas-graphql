@@ -28,7 +28,7 @@ export default class User {
 
         const sender = new Sender(new EmailVerification(email));
         const { message } = await sender.sendEmail();
-
+    
         const { access_token } = await this.login(email, password);
         
         return {access_token, message};

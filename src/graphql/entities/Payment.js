@@ -1,8 +1,12 @@
-export class Payment {
+import mercadopago from 'mercadopago';
+
+export default class Payment {
 
     constructor(publicKey, accessToken) {
         this.publicKey = publicKey;
         this.accessToken = accessToken;
+        
+        mercadopago.configurations.setAccessToken(this.accessToken); 
     }
 
     async createPreference(params) {

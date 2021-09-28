@@ -79,7 +79,7 @@ const Mutation = {
     },
 
     async validatePayment(root, { input }, ctx) {
-        return await fcs.validatePayment(input);
+        return await fcs.validatePayment(input, ctx.token);
     }
     
 }

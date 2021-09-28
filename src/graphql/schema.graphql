@@ -23,7 +23,7 @@ type Mutation {
     updatePassword(input: formUpdatePassword): String
     sendEmailUpdatePassword(input: FormEmail): Message
     finalizeOrder(input: FormFinalizeOrder): OrderFinalized
-    validateCollect(input: FormValidateCollect): OrderFinalized
+    validatePayment(input: FormValidateCollect): OrderFinalized
     addProductOrder(input: FormOrderProduct): Order
     addCategory(input: FormAddCategory): ID
     deleteUser(input: FormDeleteUser): String
@@ -34,8 +34,8 @@ type Mutation {
 }
 
 # Auxiliars
-type FormValidateCollect {
-    
+input FormValidateCollect {
+    status_payment: String
 }
 
 type OrderFinalized {

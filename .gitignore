@@ -8,3 +8,4 @@ test/gmail_2.py
 test/credentials.json
 *__pycache__
 test/add_db.py
+test/index.html
