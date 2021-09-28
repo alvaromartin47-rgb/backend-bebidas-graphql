@@ -142,7 +142,7 @@ export default class Order {
 
     static async collect(userId) {
         const order = await Order.getOrderPendient(userId);
-    
+
         if (!order.status_payment) {
             await Order.update(userId, {status_payment: "pending"});
 
@@ -155,13 +155,19 @@ export default class Order {
                 title: "Pago online",
                 unit_price: Number(order.cost.total),
                 quantity: Number(1)
-            });
+            }, order._id);
         }
 
         throw new Error("You must validate transaction");
     }
 
-    static async validatePayment(resultTransaction) {
+    static async validatePayment(orderId, resultTransaction) {
+        const order = OrderSchema.findById(orderId);
+
+        if (!order.status_payment || order.status_payment == "success") {
+            throw new Error("Validate payment requires status payment pending");
+        }
+
         if (resultTransaction.status_payment == "failure") {
             await Order.update({status_payment: null});
         }

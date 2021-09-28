@@ -76,10 +76,6 @@ const Mutation = {
 
     async deleteOrder(root, { input }, ctx) {
         return await fcs.processDeleteOrder(input.order_id);
-    },
-
-    async validatePayment(root, { input }, ctx) {
-        return await fcs.validatePayment(input, ctx.token);
     }
     
 }

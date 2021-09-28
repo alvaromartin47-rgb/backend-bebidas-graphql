@@ -9,11 +9,11 @@ export default class Payment {
         mercadopago.configurations.setAccessToken(this.accessToken); 
     }
 
-    async createPreference(params) {
+    async createPreference(params, order) {
         let preference = {
             items: [params],
             back_urls: {
-                "success": `${process.env.URI}/success`,
+                "success": `https://payment.loca.lt/success/${order}`,
                 "failure": `${process.env.URI}/failure`,
                 "pending": `${process.env.URI}/pending`
             },

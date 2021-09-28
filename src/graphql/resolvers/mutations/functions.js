@@ -142,17 +142,6 @@ async function processDeleteOrder(orderId) {
     return "Order deleted correctly";
 }
 
-async function processValidatePayment(resultTransaction, accessToken) {
-    const { id } = Token.decode(accessToken);
-    const order = await Order.getOrderPendient(id);
-
-    if (!order.status_payment || order.status_payment == "success") {
-        throw new Error("Validate payment requires status payment pending");
-    }
-
-    return await Order.validatePayment(resultTransaction);
-}
-
 module.exports = {
     processSignUp,
     processSignIn,
@@ -166,6 +155,5 @@ module.exports = {
     processUpdateProduct,
     processAddProductOrder,
     processFinalizeOrder,
-    processDeleteOrder,
-    processValidatePayment
+    processDeleteOrder
 }
