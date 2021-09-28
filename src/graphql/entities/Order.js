@@ -1,6 +1,8 @@
 import OrderSchema from '../../models/OrderSchema';
 import Product from '../entities/Product';
+import Payment from '../entities/Payment';
 import ProductSchema from '../../models/ProductSchema';
+import utils from '../../graphql/resolvers/utils';
 
 export default class Order {
 
@@ -24,7 +26,8 @@ export default class Order {
                 total: 50.0
             },
             products: [],
-            status: "Pendient"
+            status: "Pendient",
+            status_payment: null
         });
         
         await newOrderSchema.save();
@@ -36,19 +39,14 @@ export default class Order {
     //     }, body);
     // }
 
-    async _getOrderUpdatedByCost(userId, orderProduct) {
-        const searchField = {
-            user_id: userId,
-            status: "Pendient"
-        }
-
-        const { price, stock } = await Product.findById(orderProduct.product_id);
-        const order = await OrderSchema.find(searchField);
-    
+    static async _updateOrderByCost(order, product, orderProduct) {
+        const price = product.price;
+        const stock = product.stock;
+        
         if (orderProduct.quantity > stock) throw new Error("Insuficient stock");
         
         orderProduct.total = orderProduct.quantity * price;
-        const cost = order[0].cost;
+        const cost = order.cost;
     
         cost.import = cost.import + (price * orderProduct.quantity);
         cost.total = cost.import - cost.discount + cost.delivery;
@@ -58,14 +56,10 @@ export default class Order {
             cost.import = 0;
         }
 
-        order[0].cost = cost;
-
-        return order[0];
+        order.cost = cost;
     }
 
-    static async addProduct(userId, orderProduct) {
-        const { cost, products } = this._getOrderUpdatedByCost(userId, orderProduct);
-    
+    static _verifyExistProductInOrder(products, orderProduct) {
         let ok = false; 
         for (let i=0; i < products.length; i++) {
             if (products[i].product_id != orderProduct.product_id) continue;
@@ -76,20 +70,115 @@ export default class Order {
         }
     
         if (!ok) products.push(orderProduct);
+    }
+
+    static async getOrderPendient(userId) {
+        const searchField = {
+            user_id: userId,
+            status: "Pendient"
+        }
+
+        const order = await OrderSchema.find(searchField);
+
+        return order[0];
+    }
+
+    static async addProduct(userId, orderProduct) {
+        const order = await Order.getOrderPendient(userId);
+        const product = await Product.findById(orderProduct.product_id);
+        const stock = product.stock;
+        
+        const stock = await Order._getOrderUpdatedByCost(
+            order,
+            product,
+            orderProduct
+        );
+        
+        Order._verifyExistProductInOrder(order.products, orderProduct);
         
         await ProductSchema.updateOne({ _id: orderProduct.product_id }, {
             stock: stock - orderProduct.quantity
         });
     
         await OrderSchema.updateOne(searchField, {
-            products,
-            cost
+            products: order.products,
+            cost: order.cost
         });
         
         const orders = await OrderSchema.find(searchField);
         const orders_updated = await utils.getProductsById(orders);
         
         return orders_updated[0];
+    }
+
+    static async finalize(userId) {
+        const searchField = {
+            user_id: userId,
+            status: "Pendient"
+        }
+    
+        const orders = await OrderSchema.find(searchField);
+        
+        if (orders[0].products.length == 0) {
+            throw new Error("You must add at least one product");
+        }
+        
+        await Order.create(id);
+    
+        await OrderSchema.updateOne(searchField, {
+            status: "In preparation",
+            created_at: moment().unix(),
+            address: input.address,
+            payment: input.payment
+        });
+    
+        return {message: "Order in preparation"};
+    }
+
+    static async update(userId, fields) {
+        const searchField = {
+            user_id: userId,
+            status: "Pendient"
+        }
+
+        await OrderSchema.updateOne(searchField, fields);
+    }
+
+    static async collect(userId) {
+        const order = await Order.getOrderPendient(userId);
+
+        if (!order.status_payment) {
+            await Order.update({status_payment: "pending"});
+
+            const payment = new Payment(
+                process.env.PUBLIC_KEY_MP,
+                process.env.ACCESS_TOKEN_MP
+            );
+            
+            return payment.createPreference({
+                title: "Pago online",
+                unit_price: Number(order.cost.total),
+                quantity: Number(1)
+            });
+        }
+
+        throw new Error("You must validate transaction");
+    }
+
+    static async validatePayment(resultTransaction) {
+        if (resultTransaction.status_payment == "failure") {
+            await Order.update({status_payment: null});
+        }
+
+        else if (resultTransaction.status_payment == "success") {
+            await Order.update({status_payment: "paid out"});
+        }
+
+        else throw new Error("Result must be success or failure");
+
+        const payment = new Payment(process.env.PUBLIC_KEY_MP, process.env.ACCESS_TOKEN_MP);
+        
+        return payment.validate(resultTransaction);
     }
 
 }

@@ -107,8 +107,6 @@ async function processUpdateProduct(input) {
     return "Product updated";
 }
 
-// Refactorizar
-
 async function processAddProductOrder(input, accessToken) {
     const { id } = Token.decode(accessToken);
 
@@ -117,28 +115,16 @@ async function processAddProductOrder(input, accessToken) {
 
 async function processFinalizeOrder(input, accessToken) {
     const { id } = Token.decode(accessToken);
+    
+    if (input.payment == "mercado-pago") {
+        const preferenceId = await Order.collect(id);
+        const orderFinalized = await Order.finalize(id);
+        orderFinalized.preference_id = preferenceId;
 
-    const searchField = {
-        user_id: id,
-        status: "Pendient"
+        return orderFinalized;
     }
 
-    const orders = await OrderSchema.find(searchField);
-    
-    if (orders[0].products.length == 0) {
-        throw new Error("You must add at least one product");
-    }
-    
-    await Order.create(id);
-
-    await OrderSchema.updateOne(searchField, {
-        status: "In preparation",
-        created_at: moment().unix(),
-        address: input.address,
-        payment: input.payment
-    });
-
-    return "Order in preparation";
+    return await Order.finalize(id);
 }
 
 async function processDeleteOrder(orderId) {
@@ -154,6 +140,17 @@ async function processDeleteOrder(orderId) {
     return "Order deleted correctly";
 }
 
+async function processValidatePayment(accessToken, resultTransaction) {
+    const { id } = Token.decode(accessToken);
+    const order = await OrderSchema.findById(id);
+
+    if (!order.status_payment || order.status_payment == "success") {
+        throw new Error("Validate payment requires status payment pending");
+    }
+
+    return await Order.validatePayment(resultTransaction);
+}
+
 module.exports = {
     processSignUp,
     processSignIn,
@@ -167,5 +164,6 @@ module.exports = {
     processUpdateProduct,
     processAddProductOrder,
     processFinalizeOrder,
-    processDeleteOrder
+    processDeleteOrder,
+    processValidatePayment
 }

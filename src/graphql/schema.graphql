@@ -22,7 +22,8 @@ type Mutation {
     updateProfile(input: formUpdateProfile): String
     updatePassword(input: formUpdatePassword): String
     sendEmailUpdatePassword(input: FormEmail): Message
-    finalizeOrder(input: FormFinalizeOrder): String
+    finalizeOrder(input: FormFinalizeOrder): OrderFinalized
+    validateCollect(input: FormValidateCollect): OrderFinalized
     addProductOrder(input: FormOrderProduct): Order
     addCategory(input: FormAddCategory): ID
     deleteUser(input: FormDeleteUser): String
@@ -33,6 +34,17 @@ type Mutation {
 }
 
 # Auxiliars
+type FormValidateCollect {
+    
+}
+
+type OrderFinalized {
+    preference_id: ID
+    message: String
+}
+type PreferenceId {
+    preference_id: ID
+}
 
 input FormDeleteOrder {
     order_id: ID!

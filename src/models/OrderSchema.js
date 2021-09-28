@@ -33,6 +33,7 @@ const orderSchema = new Schema({
     cost: costSchema,
     payment: {type: String, required: false},
     status: {type: String},
+    status_payment: {type: String},
 });
 
 orderSchema.plugin(uniqueValidator);
