@@ -142,8 +142,8 @@ export default class Order {
 
     static async collect(userId) {
         const order = await Order.getOrderPendient(userId);
-
-        if (!order.status_payment) {
+        // !order.status_payment
+        if (true) {
             await Order.update(userId, {status_payment: "pending"});
 
             const payment = new Payment(
@@ -161,13 +161,7 @@ export default class Order {
         throw new Error("You must validate transaction");
     }
 
-    static async validatePayment(orderId, resultTransaction) {
-        const order = OrderSchema.findById(orderId);
-
-        if (!order.status_payment || order.status_payment == "success") {
-            throw new Error("Validate payment requires status payment pending");
-        }
-
+    static async validatePayment(resultTransaction) {
         if (resultTransaction.status_payment == "failure") {
             await Order.update({status_payment: null});
         }

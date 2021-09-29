@@ -17,6 +17,22 @@ services:
         volumes: 
             - ./src/services/chat:/app/service
         command: /bin/sh /app/service/scripts/execute-socket.sh
+    
+    payment:
+        container_name: payment
+        build:
+            context: ./src/services/payment
+            dockerfile: Dockerfile
+        image: api-payment
+        ports:
+            - 8080:8080
+        links:
+            - graphql
+        depends_on: 
+            - graphql
+        volumes: 
+            - ./src/services/payment:/app/service
+        command: /bin/sh /app/service/scripts/execute-payment.sh
 
     graphql:
         container_name: graphql
@@ -45,6 +61,18 @@ services:
         depends_on: 
             - socket
         command: "lt -p 6000 -l socket -s socket"
+    
+    local_tunnel_payment:
+        container_name: local_tunel_payment
+        build:
+            context: ./dockerfiles
+            dockerfile: localtunnel.dockerfile
+        image: sv-localtunnel
+        links:
+            - payment
+        depends_on: 
+            - payment
+        command: "lt -p 8080 -l payment -s payment"
 
     local_tunnel_graphql:
         container_name: local_tunel_graphql
