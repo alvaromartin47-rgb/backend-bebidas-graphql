@@ -1,5 +1,5 @@
 import fcs from './functions';
-import { isUser, isUserRecover, isSuperAdmin } from '../utils'
+import { isUser, isUserRecover, isSuperAdmin } from '../utils';
 
 const Mutation = {
     async signUp(root, { input }, ctx) {
@@ -10,7 +10,7 @@ const Mutation = {
     },
 
     async signUpAdmin(root, { input }, ctx) {
-        await isSuperAdmin(ctx.token);
+        await isSuperAdmin(ctx.token, process.env.ACCESS_TOKEN_SECRET);
         input.role = "Admin";
         input.account_verified = "true";
 
@@ -78,8 +78,10 @@ const Mutation = {
         return await fcs.processDeleteOrder(input.order_id);
     },
 
-    validatePayment(root, { input }, ctx) {
-        return await fcs.processValidatePayment(input);
+    async validatePayment(root, { input }, ctx) {
+        await isSuperAdmin(ctx.token, process.env.PWD_PAYMENT);
+
+        return await fcs.processValidatePayment(input, ctx.token);
     }
     
 }

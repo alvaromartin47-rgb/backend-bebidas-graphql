@@ -34,6 +34,7 @@ const orderSchema = new Schema({
     payment: {type: String, required: false},
     status: {type: String},
     status_payment: {type: String},
+    payment_id: {type: String},
 });
 
 orderSchema.plugin(uniqueValidator);

@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const env = require('node-env-file');
 const gql = require('graphql-tag');
+const Token = require('./entities/Token');
 const { sendQueryGraphQL } = require('./functions');
 
 env('src/.env');
@@ -9,12 +10,15 @@ env('src/.env');
 const app = express();
 app.use(cors());
 
-app.get("/success/:id", async (req, res) => {
-    const result = req.query;
-    const new_query = gql `
-        mutation {
-            validatePayment(input: {
-                mercado_pago: {
+app.get("/success/:access_token", async (req, res) => {
+    try {
+        Token.verify(req.params.access_token, process.env.PRIVATE_PWD);
+        const { order_id } = Token.decode(req.params.access_token);
+    
+        const result = req.query;
+        const new_query = gql `
+            mutation {
+                validatePayment(input: {
                     collection_id: "${result.collection_id}",
                     collection_status: "${result.collection_status}",
                     payment_id: "${result.payment_id}",
@@ -26,18 +30,24 @@ app.get("/success/:id", async (req, res) => {
                     site_id: "${result.site_id}",
                     processing_mode: "${result.processing_mode}",
                     merchant_account_id: "${result.merchant_account_id}"
-                }
-                order_id: "${req.params.id}"
-            })
-        }
-    `
-
-    const uri = `${process.env.GRAPHQL_URI}`;
-    const response = await sendQueryGraphQL(uri, {query: new_query});
-
-    if (response.data.validatePayment == req.params.id) {
+                })
+            }
+        `
         const redirect_uri = `${process.env.URI_CLIENT}shop`;
-        res.redirect(redirect_uri + `?order_id=${response.data.validatePayment}`)
+    
+        if (result.status != "approved") res.redirect(redirect_uri + `?order_id=null`)
+        else {
+            const graphql_uri = `${process.env.GRAPHQL_URI}`;
+            sendQueryGraphQL(
+                graphql_uri,
+                req.params.access_token,
+                {query: new_query}
+            );
+            
+            res.redirect(redirect_uri + `?order_id=${order_id}`)
+        }
+    } catch (err) {
+        res.json({"message": err});
     }
 });
 

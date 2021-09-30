@@ -15,7 +15,12 @@ export default class Session {
             role
         }
 
-        const access_token = Token.generate(body, 60*5);
+        const access_token = Token.generate(
+            body, 
+            60*5, 
+            process.env.ACCESS_TOKEN_SECRET
+        );
+        
         const { session_id, iat, exp } = Token.decode(access_token);
         
         await SessionSchema.findByIdAndUpdate(session_id, {

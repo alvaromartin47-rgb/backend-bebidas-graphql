@@ -35,11 +35,6 @@ type Mutation {
 
 # Auxiliars
 input FormValidatePayment {
-    mercado_pago: FormPayMercadoPago
-    order_id: ID
-}
-
-input FormPayMercadoPago {
     collection_id: ID
     collection_status: String
     payment_id: ID
@@ -53,16 +48,9 @@ input FormPayMercadoPago {
     merchant_account_id: String
 }
 
-input FormValidateCollect {
-    status_payment: String
-}
-
 type OrderFinalized {
     preference_id: ID
     message: String
-}
-type PreferenceId {
-    preference_id: ID
 }
 
 input FormDeleteOrder {
@@ -169,6 +157,8 @@ type Order {
     cost: Cost
     payment: String
     status: String
+    payment_id: String
+    status_payment: String
 }
 
 type Product {

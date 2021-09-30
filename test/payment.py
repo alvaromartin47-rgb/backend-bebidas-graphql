@@ -50,18 +50,5 @@ class payment(unittest.TestCase):
         #         "Authorization": f"Bearer {self.accessTokenMP}"
         #     }
         # )
-        
-        # product = Product(self.accessToken)
-        # products = product.getProducts("Vinos")
-
-        # Agregar un producto a la orden
-
-        # petition = Petition(self.accessToken)
-
-        # template = Template('''
-        
-        # ''')
-        
-        # preference_id = petition.sendQuery()
 
 unittest.main()

@@ -3,7 +3,6 @@ import Product from '../entities/Product';
 import Payment from '../entities/Payment';
 import ProductSchema from '../../models/ProductSchema';
 import utils from '../../graphql/resolvers/utils';
-import moment from 'moment';
 
 export default class Order {
 
@@ -112,21 +111,10 @@ export default class Order {
         return orders_updated[0];
     }
 
-    static async finalize(userId, input) {
-        const order = await Order.getOrderPendient(userId);
-        
-        if (order.products.length == 0) {
-            throw new Error("You must add at least one product");
-        }
-        
+    static async finalize(userId, resultTransaction) {
         await Order.create(userId);
     
-        await Order.update(userId, {
-            status: "In preparation",
-            created_at: moment().unix(),
-            address: input.address,
-            payment: input.payment
-        });
+        await Order.update(userId, resultTransaction);
     
         return {message: "Order in preparation"};
     }
@@ -140,41 +128,36 @@ export default class Order {
         await OrderSchema.updateOne(searchField, fields);
     }
 
-    static async collect(userId) {
+    static async collect(userId, input) {
         const order = await Order.getOrderPendient(userId);
-        // !order.status_payment
-        if (true) {
-            await Order.update(userId, {status_payment: "pending"});
-
-            const payment = new Payment(
-                process.env.PUBLIC_KEY_MP,
-                process.env.ACCESS_TOKEN_MP
-            );
-            
-            return payment.createPreference({
-                title: "Pago online",
-                unit_price: Number(order.cost.total),
-                quantity: Number(1)
-            }, order._id);
+        
+        if (order.products.length == 0) {
+            throw new Error("You must add at least one product");
         }
 
-        throw new Error("You must validate transaction");
+        const payment = new Payment(
+            process.env.PUBLIC_KEY_MP,
+            process.env.ACCESS_TOKEN_MP
+        );
+        
+        return payment.createPreference({
+            title: "Pago online",
+            unit_price: Number(order.cost.total),
+            quantity: Number(1)
+        }, {
+            order_id: order._id,
+            role: "SuperAdmin",
+            address: input.address,
+            payment: input.payment
+        });
     }
 
-    static async validatePayment(resultTransaction) {
-        if (resultTransaction.status_payment == "failure") {
-            await Order.update({status_payment: null});
-        }
+    static async findById(orderId) {
+        const orders = await OrderSchema.find({_id: orderId});
 
-        else if (resultTransaction.status_payment == "success") {
-            await Order.update({status_payment: "paid out"});
-        }
-
-        else throw new Error("Result must be success or failure");
-
-        const payment = new Payment(process.env.PUBLIC_KEY_MP, process.env.ACCESS_TOKEN_MP);
+        if (orders.length == 0) throw new Error("Order not exist")
         
-        return payment.validate(resultTransaction);
+        return orders[0];
     }
 
 }

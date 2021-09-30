@@ -117,16 +117,21 @@ async function processFinalizeOrder(input, accessToken) {
     const { id } = Token.decode(accessToken);
 
     if (input.payment == "mercado-pago") {
-        const preferenceId = await Order.collect(id);
-        const orderFinalized = await Order.finalize(id, input);
+        const preferenceId = await Order.collect(id, input);
         
-        orderFinalized.message = "Payment must be processed";
-        orderFinalized.preference_id = preferenceId;
-
-        return orderFinalized;
+        return {
+            preference_id: preferenceId,
+            message: "Payment must be processed"
+        };
     }
 
-    return await Order.finalize(id, input);
+    return await Order.finalize(id, {
+        address: input.address,
+        payment: input.payment,
+        created_at: moment().unix(),
+        status_payment: "pending",
+        status: "En preparación",
+    });
 }
 
 async function processDeleteOrder(orderId) {
@@ -142,14 +147,22 @@ async function processDeleteOrder(orderId) {
     return "Order deleted correctly";
 }
 
-async function processValidatePayment(resultTransaction) {
-    const order = OrderSchema.findById(resultTransaction.order_id);
-
-    if (!order.status_payment || order.status_payment == "success") {
-        throw new Error("Validate payment requires status payment pending");
+async function processValidatePayment(resultTransaction, accessToken) {
+    const { order_id, address, payment } = Token.decode(accessToken);
+    const { user_id, status } = await Order.findById(order_id);
+    
+    if (status == "En preparación") {
+        throw new Error("");
     }
-
-    await Order.validatePayment(resultTransaction);
+    
+    return await Order.finalize(user_id, {
+        address,
+        payment,
+        created_at: moment().unix(),
+        payment_id: resultTransaction.payment_id,
+        status_payment: resultTransaction.status,
+        status: "En preparación",
+    });
 }
 
 module.exports = {

@@ -16,7 +16,7 @@ export default class EmailVerification {
             id
         }
 
-        return Token.generate(body, 60*5);
+        return Token.generate(body, 60*5, process.env.ACCESS_TOKEN_SECRET);
     }
 
     async sendEmail() {

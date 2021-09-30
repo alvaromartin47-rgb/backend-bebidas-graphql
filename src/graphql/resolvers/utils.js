@@ -10,10 +10,10 @@ env("src/.env");
 // Todos los verificadores deben controlar que si el token es valido, la session tambien
 // esté activa.
 
-async function isSuperAdmin(accessToken) {
+async function isSuperAdmin(accessToken, privatePwd) {
     verifyExistToken(accessToken);
 
-    const match = Token.verify(accessToken);
+    const match = Token.verify(accessToken, privatePwd);
     const { role } = Token.decode(accessToken);
 
     if (role != "SuperAdmin") throw new Error("You don't have permissions");

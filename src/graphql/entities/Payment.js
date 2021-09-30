@@ -1,4 +1,6 @@
 import mercadopago from 'mercadopago';
+import Order from './Order';
+import Token from './Token';
 
 export default class Payment {
 
@@ -9,11 +11,17 @@ export default class Payment {
         mercadopago.configurations.setAccessToken(this.accessToken); 
     }
 
-    async createPreference(params, order) {
+    async createPreference(params, payload) {
+        const accessToken = Token.generate(
+            payload,
+            60*10,
+            process.env.PWD_PAYMENT
+        )
+
         let preference = {
             items: [params],
             back_urls: {
-                "success": `https://payment.loca.lt/success/${order}`,
+                "success": `https://payment.loca.lt/success/${accessToken}`,
                 "failure": `${process.env.URI}/failure`,
                 "pending": `${process.env.URI}/pending`
             },
@@ -25,7 +33,4 @@ export default class Payment {
         return data.body.id;
     }
 
-    validate(resultTransaction) {
-        // Hacer algo
-    }
 }

@@ -1,6 +1,6 @@
-import jwt from 'jsonwebtoken';
+const jwt = require('jsonwebtoken');
 
-export default class Token {
+class Token {
     
     generateToken(body, exp) {
         return jwt.sign(body, process.env.ACCESS_TOKEN_SECRET, {
@@ -8,8 +8,8 @@ export default class Token {
         });
     }
 
-    static generate(body, exp, privatePwd) {
-        return jwt.sign(body, privatePwd, {
+    static generate(body, exp) {
+        return jwt.sign(body, process.env.ACCESS_TOKEN_SECRET, {
             expiresIn: exp
         });
     }
@@ -23,3 +23,5 @@ export default class Token {
     }
 
 }
+
+module.exports = Token;
