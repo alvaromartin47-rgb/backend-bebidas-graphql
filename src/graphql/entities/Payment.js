@@ -1,5 +1,4 @@
 import mercadopago from 'mercadopago';
-import Order from './Order';
 import Token from './Token';
 
 export default class Payment {

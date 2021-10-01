@@ -32,13 +32,7 @@ export default class Order {
 
         await newOrderSchema.save();
     }
-
-    // static async updatePendient(body) {
-    //     await ProductSchema.updateOne({
-    //         status: "Pendient"
-    //     }, body);
-    // }
-
+    
     static async _updateOrderByCost(order, product, orderProduct) {
         const price = product.price;
         const stock = product.stock;
@@ -59,12 +53,16 @@ export default class Order {
         order.cost = cost;
     }
 
-    static _verifyExistProductInOrder(products, orderProduct) {
+    static async _verifyExistProductInOrder(products, orderProduct) {
         let ok = false; 
         for (let i=0; i < products.length; i++) {
             if (products[i].product_id != orderProduct.product_id) continue;
     
+            const product = await Product.findById(products[i].product_id);
+            
             products[i].quantity = products[i].quantity + orderProduct.quantity;
+            products[i].total = products[i].quantity * product.price;
+            
             ok = true;
             break;
         }
@@ -94,20 +92,20 @@ export default class Order {
             orderProduct
         );
         
-        Order._verifyExistProductInOrder(order.products, orderProduct);
+        await Order._verifyExistProductInOrder(order.products, orderProduct);
         
         await ProductSchema.updateOne({ _id: orderProduct.product_id }, {
             stock: stock - orderProduct.quantity
         });
-    
+        
         await Order.update(userId, {
             products: order.products,
             cost: order.cost
         });
-        
+
         const orders = await Order.getOrderPendient(userId);
         const orders_updated = await utils.getProductsById([orders]);
-        
+
         return orders_updated[0];
     }
 

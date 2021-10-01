@@ -1,6 +1,7 @@
 import env from 'node-env-file';
 import Session from '../entities/Session';
 import Token from '../entities/Token';
+import Order from '../entities/Order';
 import ProductSchema from '../../models/ProductSchema';
 
 env("src/.env");
@@ -84,11 +85,18 @@ async function getProductsById(orders) {
     for (let n=0; n < orders.length; n++) {
         for (let i=0; i < orders[n].products.length; i++) {
             const product_id = orders[n].products[i].product_id;
+            const quantity = orders[n].products[i].quantity;
 
-            const product = await ProductSchema.findById(product_id);
-        
-            orders[n].products[i].product = product;
-            delete orders[n].products[i].product_id;
+            if (quantity > 0) {
+                const product = await ProductSchema.findById(product_id);
+                orders[n].products[i].product = product;
+                delete orders[n].products[i].product_id;
+            } else {
+                orders[n].products.splice(i, 1);
+                await Order.update(orders[n].user_id, {
+                    products: orders[n].products
+                });
+            }
         }    
     }
 
