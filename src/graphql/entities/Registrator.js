@@ -17,7 +17,7 @@ export default class Registrator {
             email: this.dataUser.email
         });
     
-        if (data.length != 0) throw Error("Email ingresed already exist");
+        if (data.length != 0) throw Error("El email ingresado ya existe");
         
         const newUser = new UserSchema(this.dataUser);
         this.dataUser.password = password;

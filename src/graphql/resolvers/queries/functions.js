@@ -78,22 +78,6 @@ async function processLogout(access_token) {
     });
 }
 
-async function processVerifyEmail(access_token) {
-    const { id } = Token.decode(access_token);
-
-    await UserSchema.findByIdAndUpdate(id, {
-        account_verified: true,
-        role: "User"
-    });
-
-    const session = new Session();
-    
-    return {
-        message: "Verification done correctly",
-        access_token: (await session.startSession(id)).access_token,
-    }
-}
-
 async function processReSendEmailVerification(access_token) {
     const { id } = Token.decode(access_token);
     const { email } = await UserSchema.findById(id);
@@ -116,7 +100,6 @@ async function processFindOrders(filters) {
     const orders_updated = await utils.getProductsById(orders);
 
     return orders_updated;
-
 }
 
 
@@ -124,7 +107,6 @@ module.exports = {
     findUsers,
     findSessions,
     processLogout,
-    processVerifyEmail,
     processReSendEmailVerification,
     processProfile,
     findCategories,

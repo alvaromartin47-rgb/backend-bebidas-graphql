@@ -1,4 +1,5 @@
 import Emailer from './Emailer';
+import UserSchema from '../../models/UserSchema';
 import Token from './Token';
 import User from './User';
 
@@ -19,7 +20,7 @@ export default class EmailVerification {
         return Token.generate(body, 60*5, process.env.ACCESS_TOKEN_SECRET);
     }
 
-    async sendEmail() {
+    async sendEmailLink() {
         const registerToken = await this.generateToken();
 
         const link = `${process.env.URI}/verify_email?token=${registerToken}`;

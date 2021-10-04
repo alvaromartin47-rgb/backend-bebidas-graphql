@@ -2,7 +2,6 @@ import Password from './Password';
 import Registrator from './Registrator';
 import Session from './Session';
 import UserSchema from '../../models/UserSchema';
-import EmailVerification from './EmailVerification';
 import Sender from './Sender';
 import OrderSchema from '../../models/OrderSchema';
 
@@ -19,6 +18,7 @@ export default class User {
             phone: this.data.phone,
             account_verified: this.data.account_verified,
             role: this.data.role,
+            six_digit_code: null,
             email,
             password
         }
@@ -26,8 +26,8 @@ export default class User {
         const registrator = new Registrator(dataUser);
         await registrator.register();
 
-        const sender = new Sender(new EmailVerification(email));
-        const { message } = await sender.sendEmail();
+        const sender = new Sender();
+        const { message } = await sender.sendEmail6DigitCode(email);
     
         const { access_token } = await this.login(email, password);
         
@@ -59,6 +59,20 @@ export default class User {
         for (let i=0; i < orders.length; i++) {
             await OrderSchema.deleteOne({_id: orders[i]._id});
         }
+    }
+
+    static async verifyCodeEmail(userId, sixDigitCode) {
+        const { six_digit_code } = await UserSchema.findById(userId);
+
+        if (sixDigitCode != six_digit_code) {
+            throw new Error("El código de verificación es incorrecto");
+        }
+
+        await UserSchema.findByIdAndUpdate(userId, {
+            account_verified: true,
+            role: "User",
+            six_digit_code: null
+        });
     }
 
 }

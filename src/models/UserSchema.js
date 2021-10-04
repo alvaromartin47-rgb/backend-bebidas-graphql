@@ -16,7 +16,8 @@ const userSchema = new Schema({
         ref: "RoleSchema",
         type: String
     },
-    price: {type: String}
+    price: {type: String},
+    six_digit_code: {type: String}
 });
 
 userSchema.plugin(uniqueValidator);

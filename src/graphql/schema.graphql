@@ -5,7 +5,6 @@ type Query {
     ping: String
     users(filters: UserInput): [User]
     sessions: [Session]
-    verifyEmail: msjToken
     reSendEmailVerification: Message
     profile: User
     logout: Message
@@ -20,6 +19,7 @@ type Mutation {
     signUpSuperAdmin(input: formSignUp): msjToken
     signIn(input: formSignIn): Token
     updateProfile(input: formUpdateProfile): String
+    verifyEmail(input: FormVerifyEmail): msjToken
     updatePassword(input: formUpdatePassword): String
     sendEmailUpdatePassword(input: FormEmail): Message
     finalizeOrder(input: FormFinalizeOrder): OrderFinalized
@@ -34,6 +34,12 @@ type Mutation {
 }
 
 # Auxiliars
+
+input FormVerifyEmail {
+    email: String!
+    six_digit_code: String!
+}
+
 input FormValidatePayment {
     collection_id: ID
     collection_status: String
@@ -217,6 +223,7 @@ input formUpdateProfile {
 }
 
 input formUpdatePassword {
+    six_digit_code: String!
     new_password: String!
 }
 

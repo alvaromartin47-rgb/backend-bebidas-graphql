@@ -19,7 +19,7 @@ export default class EmailRecovery {
         return Token.generate(body, 60*5);
     }
 
-    async sendEmail() {
+    async sendEmailLink() {
         const recoverToken = await this.generateToken();
 
         const link = `${process.env.URI}/recovery_password?token=${recoverToken}`;

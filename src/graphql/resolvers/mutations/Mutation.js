@@ -33,11 +33,10 @@ const Mutation = {
         return await fcs.processUpdateProfile(ctx.token, input);
     },
 
-    async updatePassword(root, { input }, ctx) {
-        await isUserRecover(ctx.token);
-        
+    async updatePassword(root, { input }, ctx) {    
         return await fcs.processUpdatePassword(
             ctx.token,
+            input.six_digit_code,
             input.new_password
         );
     },
@@ -82,7 +81,11 @@ const Mutation = {
         await isSuperAdmin(ctx.token, process.env.PWD_PAYMENT);
 
         return await fcs.processValidatePayment(input, ctx.token);
-    }
+    },
+
+    async verifyEmail(root, { input }, ctx) {
+        return await fcs.processVerifyEmail(input.email, input.six_digit_code);
+    },
     
 }
 

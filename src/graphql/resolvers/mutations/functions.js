@@ -5,7 +5,7 @@ import fcsQ from '../queries/functions';
 import UserSchema from '../../../models/UserSchema';
 import ProductSchema from '../../../models/ProductSchema';
 import CategorySchema from '../../../models/CategorySchema';
-import EmailRecovery from '../../entities/EmailRecovery';
+import Session from '../../entities/Session';
 import PasswordSchema from '../../../models/PasswordSchema';
 import OrderSchema from '../../../models/OrderSchema';
 import Sender from '../../entities/Sender';
@@ -40,13 +40,15 @@ async function processSignUp(userSchema) {
 }
 
 async function processSendEmailUpdatePassword(email) {
-    const sender = new Sender(new EmailRecovery(email));
-    return await sender.sendEmail();
+    const sender = new Sender();
+    return await sender.sendEmail6DigitCode(email);
 }
 
-async function processUpdatePassword(accessToken, new_pwd) {
+async function processUpdatePassword(accessToken, sixDigitCode, new_pwd) {
     const { id } = Token.decode(accessToken);
 
+    await User.verifyCodeEmail(id, sixDigitCode);
+    
     const password = new Password(new_pwd);
 
     await PasswordSchema.updateOne({ userId: id }, {
@@ -165,6 +167,19 @@ async function processValidatePayment(resultTransaction, accessToken) {
     });
 }
 
+async function processVerifyEmail(email, sixDigitCode) {
+    const _id = await User.getId(email);
+
+    await User.verifyCodeEmail(_id, sixDigitCode);
+
+    const session = new Session();
+    
+    return {
+        message: "Verification done correctly",
+        access_token: (await session.startSession(_id)).access_token,
+    }
+}
+
 module.exports = {
     processSignUp,
     processSignIn,
@@ -179,5 +194,6 @@ module.exports = {
     processAddProductOrder,
     processFinalizeOrder,
     processDeleteOrder,
-    processValidatePayment
+    processValidatePayment,
+    processVerifyEmail
 }

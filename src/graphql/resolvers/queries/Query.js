@@ -26,11 +26,6 @@ const Query = {
         return await fcs.findCategories(filters);
     },
 
-    async verifyEmail(root, { input }, ctx) {
-        await isUserNotVerified(ctx.token);
-        return await fcs.processVerifyEmail(ctx.token);
-    },
-
     async logout(root, { input }, ctx) {
         await isRoleValidAndVerifyStatusSession(ctx.token);
         return await fcs.processLogout(ctx.token);
