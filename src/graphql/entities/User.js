@@ -28,10 +28,9 @@ export default class User {
 
         const sender = new Sender();
         const { message } = await sender.sendEmail6DigitCode(email);
-    
-        const { access_token } = await this.login(email, password);
+
         
-        return {access_token, message};
+        return {message};
     }
     
     static async getId(email) {

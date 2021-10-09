@@ -11,12 +11,13 @@ type Query {
     orders(filters: OrderInput): [Order]
     products(filters: FormAddProduct): [Product]
     categories(filters: CategoriesInput): [Category]
+    refreshToken: Token
 }
 
 type Mutation {
-    signUp(input: formSignUp): msjToken
-    signUpAdmin(input: formSignUp): msjToken
-    signUpSuperAdmin(input: formSignUp): msjToken
+    signUp(input: formSignUp): Message
+    signUpAdmin(input: formSignUp): Message
+    signUpSuperAdmin(input: formSignUp): Message
     signIn(input: formSignIn): Token
     updateProfile(input: formUpdateProfile): String
     verifyEmail(input: FormVerifyEmail): msjToken

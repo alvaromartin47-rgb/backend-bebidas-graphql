@@ -17,7 +17,7 @@ export default class Session {
 
         const access_token = Token.generate(
             body, 
-            60*5, 
+            10, 
             process.env.ACCESS_TOKEN_SECRET
         );
         

@@ -43,6 +43,10 @@ const Query = {
 
     async orders(root, { filters }, ctx) {
         return await fcs.processFindOrders(filters);
+    },
+
+    async refreshToken(root, { filters }, ctx) {
+        return await fcs.processRefreshToken(ctx.token);
     }
     
 }

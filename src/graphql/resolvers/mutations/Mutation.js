@@ -12,14 +12,14 @@ const Mutation = {
     async signUpAdmin(root, { input }, ctx) {
         await isSuperAdmin(ctx.token, process.env.ACCESS_TOKEN_SECRET);
         input.role = "Admin";
-        input.account_verified = "true";
+        input.account_verified = "false";
 
         return await fcs.processSignUp(input);
     },
 
     async signUpSuperAdmin(root, { input }, ctx) {
         input.role = "SuperAdmin";
-        input.account_verified = "true";
+        input.account_verified = "false";
 
         return await fcs.processSignUp(input);
     },
