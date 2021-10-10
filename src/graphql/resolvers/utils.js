@@ -52,7 +52,9 @@ function verifyExistToken(accessToken) {
 
 async function isRoleValidAndVerifyStatusSession(accessToken) {
     verifyExistToken(accessToken);
-    const { session_id } = Token.decode(accessToken);
+    const { session_id, type } = Token.decode(accessToken);
+    
+    if (type != "access") throw new Error("Access token is invalid");
     
     try {
         isRoleValid(accessToken);

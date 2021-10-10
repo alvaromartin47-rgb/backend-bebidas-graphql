@@ -12,12 +12,15 @@ export default class Session {
         const body = {
             id,
             session_id: _id,
-            role
+            role,
+            type: "refresh"
         }
 
+        // Actualizar a 15 dias de expiracion en producción
+        
         const access_token = Token.generate(
             body, 
-            10, 
+            60*5, 
             process.env.ACCESS_TOKEN_SECRET
         );
         

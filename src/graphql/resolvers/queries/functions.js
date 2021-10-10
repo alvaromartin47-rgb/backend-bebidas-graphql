@@ -103,35 +103,27 @@ async function processFindOrders(filters) {
 }
 
 async function processRefreshToken(accessToken) {
-    const { id, session_id, role } = Token.decode(accessToken);
+    if (!accessToken) throw new Error("Access token is required");
+    
+    Token.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
+    const { id, session_id, type, role } = Token.decode(accessToken);
             
-    if (!await Session.status(session_id)) throw new Error("Access token is invalid");
-    await Session.finishSession(session_id, {status: false});
+    if (type != "refresh") throw new Error("Access token is invalid");
 
-    const session = new Session();
-    return await session.startSession(id);
-             
-    // Para esto debo guardar el ultimo token en la db (para que no se 
-    // puedan generar tokens con cualquiera de los invalidos)
+    const body = {
+        id,
+        session_id,
+        role,
+        type: "access"
+    }
 
-    // const body = {
-    //     id,
-    //     session_id,
-    //     role
-    // }
-
-    // const access_token = Token.generate(
-    //     body, 
-    //     10,
-    //     process.env.ACCESS_TOKEN_SECRET
-    // );
-
-    // const { exp } = Token.decode(access_token);
-    // await SessionSchema.findByIdAndUpdate(session_id, {end: exp});
+    const access_token = Token.generate(
+        body, 
+        60*5,
+        process.env.ACCESS_TOKEN_SECRET
+    );
     
-    // return {access_token};
-    
-    throw new Error(err.name);
+    return {access_token};
 }
 
 
