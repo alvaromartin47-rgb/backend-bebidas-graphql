@@ -6,7 +6,7 @@ import 'regenerator-runtime/runtime'
 env("src/.env");
 
 const serverTest = server.start({port: process.env.GRAPHQL_PORT}, () => {
-    console.log("Server listening on port " + process.env.PORT_LOGIN);
+    console.log("Server listening on port " + process.env.GRAPHQL_PORT);
 });
 
 module.exports = serverTest;

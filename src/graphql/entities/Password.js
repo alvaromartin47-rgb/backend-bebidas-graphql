@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import PasswordSchema from '../../models/PasswordSchema';
 
 export default class Password {
@@ -8,8 +8,8 @@ export default class Password {
     }
 
     async encrypt() {
-        const saltRounds = 10;
-        return await bcrypt.hash(this.password, saltRounds);
+        const salt = await bcrypt.genSalt(10);
+        return await bcrypt.hash(this.password, salt);
     }
 
     async compare(hash) {
