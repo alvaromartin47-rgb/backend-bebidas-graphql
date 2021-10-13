@@ -1,4 +1,4 @@
-mv node_modules api/
+rm -r node_modules
 rm package.json package-lock.json
 cd api
-npm run test
+npm run jest

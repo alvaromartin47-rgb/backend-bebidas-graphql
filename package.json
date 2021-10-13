@@ -8,8 +8,9 @@
     "start": "nodemon src/index.js --exec babel-node",
     "serve": "node dist/index.js",
     "restart": "./scripts/restart.sh",
-    "test": "jest",
-    "close": "./scripts/close.sh"
+    "test": "./scripts/test.sh",
+    "close": "./scripts/close.sh",
+    "jest": "jest"
   },
   "keywords": [],
   "author": "",
